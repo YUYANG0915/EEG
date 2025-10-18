@@ -237,8 +237,7 @@ BSG-Transformer achieves **state-of-the-art performance** with:
 
 ---
 
-# SFTG: Spatial-Functional Awareness Transformer-based Graph Archetype Contrastive Learning
-
+# Spatial-Functional Awareness Transformer-Based Graph Archetype Contrastive Learning for Decoding Visual Neural Representations from EEG
 ## Problem Statement
 
 EEG signals are characterized by:

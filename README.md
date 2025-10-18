@@ -478,3 +478,241 @@ Iterate until convergence
 - 📊 **Clear visualization** of learned neural representations
 
 The framework bridges the gap between **brain activity patterns** and **semantic visual understanding**, advancing both theoretical neuroscience and practical BCI applications.
+
+---
+
+# DRDCAE-STGNN: An End-to-End Discriminative Autoencoder with Spatio-Temporal Graph Learning for Motor Imagery Classification
+
+## Problem Statement
+
+**Brain-Computer Interface (BCI)** recognizes user intentions through EEG signals in **Motor Imagery (MI)** tasks. 
+
+### Limitations of Traditional Methods
+
+| Approach | Limitation |
+|----------|-----------|
+| **CNN Models** | Only capture local features |
+| **RNN Models** | Ignore complex spatial dependencies |
+| **Both** | Miss **spatio-temporal dependencies** between brain regions |
+
+This paper proposes a novel framework integrating:
+- **Discriminative Autoencoder**
+- **Spatio-Temporal Graph Neural Network (STGNN)**
+
+---
+
+## Framework Architecture
+
+### 1️⃣ Discriminative Reconstruction-Driven Convolutional Autoencoder (DRDCAE)
+
+A convolutional autoencoder structure optimizing **dual objectives**.
+
+#### Architecture
+
+```
+Input EEG Signal (X)
+    ↓
+┌─────────────────────────────┐
+│   Encoder (Conv Layers)     │
+│   X → z (latent space)      │
+└─────────────────────────────┘
+    ↓
+┌─────────────────────────────┐
+│   Latent Space (z)          │
+│   • Reconstruction constraint│
+│   • Discriminative constraint│
+└─────────────────────────────┘
+    ↓
+┌─────────────────────────────┐
+│   Decoder (Deconv Layers)   │
+│   z → X̂ (reconstruction)    │
+└─────────────────────────────┘
+```
+
+#### Dual Optimization Objectives
+
+| Loss Type | Purpose | Formulation |
+|-----------|---------|-------------|
+| **Reconstruction Loss** | Preserve spatio-temporal information | L_recon = ||X - X̂||² |
+| **Discriminative Loss** | Enhance inter-class separability | L_disc = class separation in latent z |
+
+#### Latent Space Constraint
+
+```
+Goal: In latent space z
+• Same class samples → Close together
+• Different class samples → Far apart
+
+Implementation:
+L_total = α·L_recon + β·L_disc
+```
+
+### 2️⃣ Spatio-Temporal Graph Neural Network (STGNN)
+
+Models EEG channels as a **dynamic graph** with temporal evolution.
+
+#### Graph Construction
+
+| Component | Description |
+|-----------|-------------|
+| **Nodes** | EEG channels (electrodes) |
+| **Adjacency Matrix A** | Dynamically generated via **Mutual Information (MI)** between channels |
+| **Temporal Dimension** | Unrolled through sliding windows |
+
+
+#### Mathematical Formulation
+
+**Spatial GCN:**
+```
+H^(l+1) = σ(D^(-1/2) A D^(-1/2) H^(l) W^(l))
+
+where:
+- A: Adjacency matrix (from MI)
+- H^(l): Node features at layer l
+- W^(l): Learnable weights
+```
+
+**Temporal GRU:**
+```
+h_t = GRU(h_{t-1}, x_t)
+
+Captures sequential dependencies across time
+```
+
+---
+
+## Datasets
+
+### 1. BCI Competition IV-2a Dataset
+
+| Property | Details |
+|----------|---------|
+| **Task** | Motor Imagery (MI) |
+| **Classes** | 4 classes |
+| **Classes Details** | Left hand, Right hand, Feet, Tongue |
+| **Type** | Multi-class classification |
+
+### 2. High Gamma Dataset (BCI-HGD)
+
+| Property | Details |
+|----------|---------|
+| **Signal Type** | High-frequency EEG |
+| **Task** | Binary classification |
+| **Focus** | High gamma band activity |
+
+---
+
+## Baseline Models
+
+### Classical Deep Learning
+- **EEGNet**
+- **ShallowConvNet**
+- **DeepConvNet**
+
+### Graph-Based Methods
+- **RGNN** (Recurrent Graph Neural Network)
+- **ST-GCN** (Spatio-Temporal Graph Convolutional Network)
+
+### Advanced Methods
+- **DAFNet** (Domain Adaptation Framework)
+
+---
+
+## Key Innovations
+
+### 1️⃣ Mutual Information-Based Dynamic Graph Modeling
+
+```
+Adjacency Matrix Construction:
+A_{ij} = MI(Channel_i, Channel_j)
+
+where MI measures statistical dependence:
+MI(X,Y) = ∑∑ p(x,y) log(p(x,y)/(p(x)p(y)))
+
+Advantages:
+✓ Data-driven connectivity
+✓ Captures non-linear dependencies
+✓ Adaptive to individual differences
+```
+
+### 2️⃣ Discriminative Latent Feature Constraint
+
+```
+Traditional Autoencoder:
+• Focus: Reconstruction only
+• Issue: Similar latent features for different classes
+
+DRDCAE:
+• Dual objective: Reconstruction + Discrimination
+• Result: Class-separable latent space
+
+L_disc encourages:
+- Intra-class compactness
+- Inter-class separability
+```
+
+### 3️⃣ Unified Spatio-Temporal Modeling
+
+| Traditional Methods | DRDCAE-STGNN |
+|--------------------|--------------|
+| Spatial → Temporal (sequential) | **Simultaneous modeling** |
+| Fixed connectivity | **Dynamic MI-based graphs** |
+| Local features | **Global + Local dependencies** |
+
+---
+
+## Experimental Results Summary
+
+### Performance Improvements
+
+| Metric | BCI IV-2a | BCI-HGD |
+|--------|-----------|---------|
+| **Accuracy** | ✅ State-of-the-art | ✅ State-of-the-art |
+| **Robustness** | ✅ Cross-subject stable | ✅ Consistent |
+| **Interpretability** | ✅ Clear MI patterns | ✅ Functional connectivity |
+
+### Cross-Dataset Validation
+
+✅ **BCI Competition IV-2a**: Multi-class MI classification  
+✅ **High Gamma Dataset**: Binary classification  
+✅ Demonstrates **robustness** and **generalization**
+
+---
+
+## Advantages Over Existing Methods
+
+| Aspect | Traditional CNN/RNN | DRDCAE-STGNN |
+|--------|-------------------|--------------|
+| **Spatial Modeling** | Local convolution | Graph-based global connectivity |
+| **Temporal Modeling** | Sequential (RNN) | Hierarchical GRU with spatial context |
+| **Feature Learning** | Reconstruction or classification | **Both simultaneously** |
+| **Brain Connectivity** | Fixed/ignored | **Dynamic MI-based** |
+| **Interpretability** | Low | **High (MI maps, latent space)** |
+| **Robustness** | Subject-dependent | **Strong cross-subject generalization** |
+
+---
+
+## Applications
+
+| Domain | Application |
+|--------|-------------|
+| **Clinical BCI** | Assistive devices for paralyzed patients |
+| **Rehabilitation** | Motor imagery-based therapy |
+| **Neuroscience** | Understanding motor cortex organization |
+| **Gaming/VR** | Thought-controlled interfaces |
+| **Research** | Cross-subject MI pattern analysis |
+
+---
+
+## Conclusion
+
+**DRDCAE-STGNN** advances Motor Imagery BCI through:
+
+- 🧠 **Dynamic brain connectivity modeling** via mutual information
+- 🎯 **Discriminative feature learning** with dual-objective autoencoder
+- 🔗 **Spatio-temporal integration** via hierarchical graph networks
+- 📈 **State-of-the-art performance** on multiple MI datasets
+- 🔍 **High interpretability** with functional connectivity insights
+- 🚀 **Robust generalization** across subjects and tasks
+
+The framework bridges **neuroscience-inspired modeling** with **deep learning**, providing both superior performance and mechanistic understanding of motor imagery brain patterns.

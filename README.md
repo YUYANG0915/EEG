@@ -1,718 +1,1889 @@
-# VMoGE: Variational Mixture of Graph Neural Experts for Multi-Band Brain Network Analysis
+> [*Variational Mixture of Graph Neural Experts for Alzheimer’s Disease Biomarker Recognition in EEG Brain Networks*], [Aug 8, 2021]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
 
-## Overview
+- _Topic_: 🧠 Multi-band EEG brain network analysis for Alzheimer's disease (AD) and frontotemporal dementia (FTD) diagnosis
+- _Author_: Jun-En Ding, Anna Zilverstand, Shihao Yang, Albert Chih-Chieh Yang, and Feng Liu
+- _Group_: Stevens Institute of Technology, National Yang-Ming Chiao Tung University, University of Minnesota
+</details>
 
-Alzheimer's disease (AD) and frontotemporal dementia (FTD) exhibit overlapping electrophysiological features in electroencephalogram (EEG) signals. Traditional methods typically use full-band analysis, which can easily lead to cross-band interference.
+<details>
+<summary><strong>Problems</strong></summary>
 
-This paper proposes **VMoGE (Variational Mixture of Graph Neural Experts)**, combining graph neural networks (GNNs), variational inference (VI), and mixtures of experts (MoE) for interpretable diagnosis of multi-band brain networks.
+- _Main problem_: 🎯 AD and FTD exhibit **overlapping electrophysiological features** in EEG signals. Traditional methods use **full-band analysis**, which easily leads to **cross-band interference**.
 
-## Datasets
+- _Focus problem_: 🔍 How to leverage **multi-band EEG analysis** (δ, θ, α, β waves) to distinguish between AD, FTD, and healthy controls while capturing **spatial-functional coupling** information?
 
-### 1. Open AD Dataset
-- **Subjects**: 88 (AD, FTD, and healthy controls)
-- **EEG Configuration**: 19-channel
+- _Why important_: 💡 Different frequency bands carry distinct pathological information:
+  - **δ/θ waves**: Pathological slow waves in AD
+  - **α waves**: Frontal-temporal dysfunction in FTD  
+  - **β waves**: Early-onset dementia biomarkers
+  
+  Understanding **which bands matter for which diagnosis** enables more accurate and interpretable disease classification.
+</details>
 
-### 2. Session-based AD Dataset
-- **Subjects**: 123
-- **Stratification**: CDR = 0/1/2 (disease stage classification)
+<details>
+<summary><strong>Motivations</strong></summary>
 
-## Baseline Models
+- _Main finding/insight_: 📊 Different frequency bands have **distinct diagnostic importance**:
 
-### Transformer-based
-- EEGNet
-- EEGViT
-- Deformer
-- ADformer
-- MGFormer
+| Band | Key Finding | Clinical Significance |
+|------|-------------|----------------------|
+| **δ/θ waves** | Highest weight in HC vs AD | Enhanced pathological slow waves |
+| **α waves** | Dominant in HC vs FTD | Frontal-temporal lobe dysfunction |
+| **β waves** | Distinguish FTD from AD | More prominent in young patients |
 
-### Graph/MoE-based
-- GraphMoRE
-- GraphDIVE
-- MoGE
-- Mowst
+**Spatial patterns also differ**:
+- **AD**: α/θ abnormalities in **occipital & parietal** (posterior brain)
+- **FTD**: β abnormalities in **frontal & temporal** (anterior brain)
+- **Disease progression** (CDR 0→2): Abnormalities expand **posterior → anterior**
 
-## Key Findings
+**Correlations**:
+- δ waves ↔ MMSE: **r = -0.336** (cognitive decline)
+- β waves ↔ age: Negative correlation (early-onset marker)
 
-### 1. Interpretation of Frequency Band Weights
+- _Why necessary_: 🏥 Full-band analysis **loses frequency-specific information** critical for differential diagnosis. A **multi-band, graph-based approach** can capture both spectral and spatial patterns unique to each dementia type.
+</details>
 
-| Band | Key Finding |
-|------|-------------|
-| **δ/θ waves** | Highest weight in HC vs AD, reflecting enhanced pathological slow waves |
-| **α waves** | Dominant role in HC vs FTD, revealing dysfunction of the frontal-temporal lobe network |
-| **β waves** | Used to distinguish FTD from AD, more prominent in young patients |
+<details>
+<summary><strong>Solutions</strong></summary>
 
-### 2. Correlation between Cognition and Age
+- _Idea_: 💭 Propose **VMoGE (Variational Mixture of Graph Neural Experts)**, combining:
+  - **Graph Neural Networks (GNNs)**: Model spatial brain connectivity
+  - **Variational Inference (VI)**: Handle uncertainty in band selection
+  - **Mixture of Experts (MoE)**: Assign different frequency bands to specialized experts
 
-- **δ waves**: Significantly negatively correlated with cognitive scores (MMSE) (**r = −0.336**), reflecting cognitive decline
-- **β waves**: Negatively correlated with age, suggesting potential biomarkers for early-onset dementia
+- _Method_: 🔧
+  - **Datasets**:
+    - Open AD Dataset: 88 subjects (AD, FTD, HC), 19-channel EEG
+    - Session-based AD: 123 subjects, stratified by CDR = 0/1/2
+  - **Architecture**: Multi-band graph experts process δ, θ, α, β bands separately, then combine via variational gating
+  - **Baselines**: 
+    - Transformer: EEGNet, EEGViT, Deformer, ADformer, MGFormer
+    - Graph/MoE: GraphMoRE, GraphDIVE, MoGE, Mowst
 
-### 3. Spatial Distribution Pattern
+- _Result_: 📈
+  - **Band importance successfully identified** (δ/θ for AD, α for FTD, β for FTD vs AD)
+  - **Spatial patterns revealed**: Posterior (AD) vs. Anterior (FTD) degeneration
+  - **Strong correlations**: δ with cognition (r=-0.336), β with age
+  - **Disease progression tracked**: CDR 0→2 shows posterior→anterior spread
 
-#### AD Pathology
-- **α/θ abnormalities** concentrated in occipital and parietal lobes
-- Indicates functional degeneration of the posterior brain region
-
-#### FTD Pathology
-- **β abnormalities** concentrated in frontal and temporal lobes
-- Indicates degeneration of the anterior brain region
-
-#### Disease Progression
-- With disease progression (CDR = 0→2), abnormal activity gradually **expands from posterior to anterior regions**
-
-## Clinical Implications
-
-The multi-band approach reveals distinct electrophysiological signatures:
-- **AD**: Posterior brain degeneration with slow-wave dominance
-- **FTD**: Anterior brain degeneration with beta-wave alterations
-- **Age-related**: Beta waves serve as early-onset dementia biomarkers
-- **Cognitive decline**: Delta waves correlate with MMSE deterioration
+- _Conclusion_: 🎓 **VMoGE enables interpretable multi-band analysis** that reveals:
+  - ✅ **Frequency-specific biomarkers** for AD/FTD differential diagnosis
+  - ✅ **Spatial-spectral coupling** patterns unique to each disease
+  - ✅ **Disease progression mapping** via band weight evolution
+  - ✅ **Clinical insights**: Posterior (AD) vs. Anterior (FTD), slow waves (AD) vs. fast waves (FTD in young patients)
+  
+  Multi-band graph modeling > full-band analysis for interpretable dementia diagnosis. 🧠
+</details>
+</details>
 
 ---
 
-# BSG-Transformer: Balanced Signed Graph Algorithm Unrolling Transformer
+> [*BSG-Transformer: Balanced Signed Graph Algorithm Unrolling Transformer*], [Date]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
 
-## Problem Statement
+- _Topic_: ⚡ Interpretable EEG classification using balanced signed graphs with both positive and negative correlations (epilepsy detection)
+- _Core Author_: [Author names from paper]
+- _Core Group_: [Research institution/group]
+</details>
 
-EEG signals often exhibit both **positively and negatively correlated brain region activities** (e.g., epilepsy patients vs. healthy controls). However, mainstream graph neural networks and Transformer models only consider **positive edges** (positive correlations).
+<details>
+<summary><strong>Problems</strong></summary>
 
-This paper proposes an **interpretable Transformer framework** — **Balanced Signed Graph Algorithm Unrolling Transformer (BSG-Transformer)**, which "unrolls" a balanced signed graph spectral denoising algorithm into a neural network.
+- _Main problem_: 🎯 EEG signals exhibit both **positively and negatively correlated brain region activities** (e.g., epilepsy vs. healthy). However, mainstream GNNs and Transformers only consider **positive edges** (positive correlations), losing critical inhibitory/excitatory dynamics.
 
-## Background: Balanced Signed Graph
+- _Focus problem_: 🔍 How to build an **interpretable graph-based model** that captures **both positive and negative brain correlations** while maintaining computational efficiency?
 
-### Definition
-- A graph containing both **positive and negative edges**
-- Considered **"balanced"** if there are no cycles with an odd number of negative edges
-- Graphs satisfying this condition can be interpreted through the **Cartwright-Harary Theorem (CHT)**
-- Can be mapped to corresponding positive graphs via similarity transformations, enabling frequency and filtering operations in the **spectral domain**
+- _Why important_: 💡 Brain networks involve both:
+  - **Excitatory connections** (positive correlations)
+  - **Inhibitory connections** (negative correlations)
+  
+  Ignoring negative edges means **missing half the story** of neural dynamics. Traditional models can't distinguish between positively and negatively correlated regions.
+</details>
 
-## Model Architecture
+<details>
+<summary><strong>Motivations</strong></summary>
 
-### 1️⃣ Balanced Graph Learning (BGL)
+- _Main finding/insight_: 📊 **Balanced signed graphs** (containing both +/− edges) can be:
+  - Theoretically grounded via **Cartwright-Harary Theorem**
+  - Mapped to positive graphs via similarity transformation
+  - Analyzed in **spectral domain** using graph Laplacian
+  
+  **Algorithm unrolling** transforms a **spectral denoising algorithm** into an **interpretable Transformer**:
+  - Graph attention ↔ Self-attention
+  - Cutoff frequency ω ↔ Attention weight control
 
-- **Nodes**: EEG sensors
-- **Edge weights**: Calculated using feature distance (Mahalanobis Distance)
-- **Edge signs**: Adjusted based on node polarity β_i (±1) to ensure graph balance
-- **Guarantee**: Laplacian matrix is positive semi-definite (PSD) for spectral filtering
+- _Why necessary_: 🏥 **Interpretability + Efficiency**:
+  - Traditional black-box models lack neurophysiological interpretation
+  - Complex Transformers require millions of parameters
+  - Need **lightweight, interpretable, theoretically grounded** approach
+</details>
 
-**Formulation:**
-```
-L_B = balanced Laplacian matrix
-T = diag(β) (polarity matrix)
-L_+ = T·L_B·T^(-1) (corresponding positive graph Laplacian)
-```
+<details>
+<summary><strong>Solutions</strong></summary>
 
-### 2️⃣ Graph Signal Denoising
+- _Idea_: 💭 Propose **BSG-Transformer**, which "unrolls" a **balanced signed graph spectral denoising algorithm** into neural network layers:
 
-- Design ideal low-pass filter: **g_ω(L_+)**
-- Preserve low-frequency components (smooth brain region activity)
-- **Lanczos approximation** for efficient spectral filtering (linear time, no eigendecomposition)
-- Denoising network serves as a **pretext task** to learn signal distribution
+| Component | Description |
+|-----------|-------------|
+| **Balanced Graph Learning** | Construct graphs with +/− edges using node polarity β_i (±1) |
+| **Spectral Filtering** | Low-pass filter g_ω(L_+) preserves smooth brain activity |
+| **Algorithm Unrolling** | Each layer = graph learning + filtering with learnable ω |
+| **Denoiser-Based Classification** | Train separate denoisers Ψ₀ (healthy), Ψ₁ (epilepsy) |
 
-### 3️⃣ Algorithm Unrolling
+- _Method_: 🔧
+  - **Graph construction**:
+    ```
+    L_+ = T·L_B·T^(-1)
+    T = diag(β), β_i ∈ {-1, +1}
+    Edge weights: Mahalanobis Distance
+    ```
+  - **Spectral filtering**: Lanczos approximation (linear time, no eigendecomposition)
+  - **Classification**: `c* = argmin ||y - Ψ_c(y)||²` (reconstruction error)
+  - **Datasets**: Turkish Epilepsy EEG, TUH Abnormal EEG Corpus
+  - **Baselines**: DGCNN, GIN, EEGNet
 
-- Iteratively unroll **"graph learning module + low-pass filtering module"** into neural network layers
-- Each layer learns its own **cutoff frequency ω**
-- Equivalent to interpretable Transformer layers:
-  - **Graph attention ≈ Self-attention mechanism**
-  - **Normalized edge weights w̄_ij ≈ Attention scores**
-- Extract node features using shallow CNN with minimal parameters
-
-### 4️⃣ Denoiser-Based Classification
-
-Train two denoisers:
-- **Ψ_0(·)**: Healthy EEG denoiser
-- **Ψ_1(·)**: Epilepsy EEG denoiser
-
-**Classification rule:**
-```
-c* = argmin_{c∈{0,1}} ||y - Ψ_c(y)||²
-```
-The class with **lower reconstruction error** is predicted.
-
-## Architecture Diagram
-
-```
-Input EEG Signal (y)
-    ↓
-[Shallow CNN Feature Extraction]
-    ↓
-[Layer 1: BGL + Spectral Filter (ω₁)]
-    ↓
-[Layer 2: BGL + Spectral Filter (ω₂)]
-    ↓
-    ...
-    ↓
-[Layer K: BGL + Spectral Filter (ω_K)]
-    ↓
-[Reconstruction: ŷ = Ψ_c(y)]
-    ↓
-[Classification: argmin ||y - ŷ||²]
-```
-
-## Datasets
-
-- **Turkish Epilepsy EEG Dataset**
-- **TUH Abnormal EEG Corpus**
-
-## Baseline Models
-
-- DGCNN
-- GIN
-- EEGNet
-
-## Key Innovations
-
-### 1. Theoretical Contributions
-
-| Innovation | Description |
-|------------|-------------|
-| **Balanced Signed Graph + Spectral Filtering** | First integration with Transformer structure |
-| **Algorithm Unrolling** | Interpretable modeling approach |
-
-### 2. Interpretable Transformer Mechanism
-
-| Component | Mapping |
-|-----------|---------|
-| **Graph Attention** | ↔ Self-Attention |
-| **Cutoff Frequency ω** | ↔ Attention weight control |
-
-### 3. Efficiency
+- _Result_: 📈
 
 | Metric | Performance |
 |--------|-------------|
-| **Parameters** | Only 15,000 |
-| **Training Time** | 40% of EEGNet |
-| **Inference Time** | 55 seconds (same dataset) |
+| **Parameters** | Only **15,000** (vs. millions in Transformers) |
+| **Training Time** | **40% of EEGNet** (2.5× faster) |
+| **Inference Time** | **55 seconds** |
+| **Accuracy** | State-of-the-art on both datasets |
+| **Statistical Significance** | **p < 0.001** |
 
-### 4. Generalization
+**Advantages**:
+- ✅ **Positive + negative edges** (balanced signed graph)
+- ✅ **Interpretable** (spectral filtering = neurophysiological meaning)
+- ✅ **Ultra-efficient** (15K params, 2.5× faster training)
+- ✅ **Theoretically grounded** (spectral graph theory)
 
-- ✅ Validated on both **LOSO** and **TUH** datasets
-- ✅ Statistical significance: **p < 0.001**
-
-## Advantages Over Existing Methods
-
-| Feature | Traditional GNN/Transformer | BSG-Transformer |
-|---------|----------------------------|-----------------|
-| **Edge Types** | Positive only | Positive + Negative (balanced) |
-| **Interpretability** | Black-box attention | Spectral filtering with physical meaning |
-| **Parameters** | Millions | 15K |
-| **Training Efficiency** | Baseline | 2.5× faster |
-| **Domain Knowledge** | Implicit | Explicit (spectral graph theory) |
-
-## Mathematical Foundation
-
-**Balanced Graph to Positive Graph Mapping:**
-```
-L_+ = T·L_B·T^(-1)
-where T = diag(β), β_i ∈ {-1, +1}
-```
-
-**Spectral Low-Pass Filter:**
-```
-g_ω(L_+) = ideal low-pass filter with cutoff ω
-X_filtered = g_ω(L_+) · X
-```
-
-**Lanczos Approximation:**
-```
-Linear time complexity O(|E|·K)
-No eigendecomposition required
-```
-
-## Clinical Implications
-
-- **Interpretable EEG analysis** through spectral graph theory
-- **Efficient deployment** with minimal computational requirements
-- **Robust classification** via denoiser-based approach
-- **Captures both excitatory and inhibitory** brain network interactions
-
-## Conclusion
-
-BSG-Transformer achieves **state-of-the-art performance** with:
-- 📊 **Superior accuracy** on epilepsy detection
-- 🧠 **Interpretable mechanism** via spectral filtering
-- ⚡ **High efficiency** (15K parameters, fast training)
-- 🔬 **Strong theoretical foundation** (balanced signed graph theory)
-- ✨ **Novel architecture** bridging algorithm unrolling and Transformers
+- _Conclusion_: 🎓 **BSG-Transformer achieves state-of-the-art epilepsy detection** with:
+  - 🧠 **Interpretable mechanism** via spectral filtering (not black-box attention)
+  - ⚡ **High efficiency** (15K parameters, fast training)
+  - 🔬 **Strong theoretical foundation** (balanced signed graph theory)
+  - ✨ **Novel architecture** bridging algorithm unrolling and Transformers
+  - 📊 **Captures excitatory AND inhibitory** brain dynamics
+  
+  Algorithm unrolling + signed graphs = interpretable, efficient EEG analysis. 🏆
+</details>
+</details>
 
 ---
 
-# Spatial-Functional Awareness Transformer-Based Graph Archetype Contrastive Learning for Decoding Visual Neural Representations from EEG
-## Problem Statement
+> [*Spatial-Functional Awareness Transformer-based Graph Archetype Contrastive Learning for Decoding Visual Neural Representation from EEG*], [Oct 9, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
 
-EEG signals are characterized by:
-- **High dimensionality**
-- **High noise levels**
-- **Complex non-Euclidean structure**
+- _Topic_: 👁️ EEG visual decoding - reconstructing what people see from brain signals
+- _Author_: Yueming Sun, Long Yang
+- _Group_: Durham University
+</details>
 
-Current research in **EEG visual decoding** suffers from **insufficient utilization of spatial-functional coupling information**.
+<details>
+<summary><strong>Problems</strong></summary>
 
-## Proposed Framework: SFTG
+- _Main problem_: 🎯 EEG signals have **high dimensionality, high noise, complex non-Euclidean structure**. Current visual decoding research suffers from **insufficient utilization of spatial-functional coupling information**.
 
-This paper proposes **SFTG (Spatial-Functional awareness Transformer-based Graph Archetype Contrastive Learning)**, which models EEG signals as graph structures where each electrode is a node, integrating:
-- **Spatial connectivity** (anatomical relationships)
-- **Functional connectivity** (neural correlations)
+- _Focus problem_: 🔍 How to integrate **spatial connectivity** (anatomical layout) and **functional connectivity** (neural correlations) to decode visual information from noisy EEG signals?
 
-These form a **spatiotemporal graph structure** for comprehensive brain activity modeling.
+- _Why important_: 💡 Brain activity during visual perception involves:
+  - **Spatial relationships**: Physical electrode positions matter
+  - **Functional relationships**: Which brain regions communicate
+  
+  Traditional methods use **one or the other**, missing their **synergy**. This limits accuracy in decoding what people are seeing from brain signals.
+</details>
 
----
+<details>
+<summary><strong>Motivations</strong></summary>
 
-## Core Innovations
+- _Main finding/insight_: 📊 **Spatial-functional integration + archetype learning** enables robust visual decoding:
 
-### 1️⃣ Graph Archetype Contrastive Learning (GAC)
+**Key insights**:
+- **Semantic clustering emerges**: Animals, food, tools cluster separately in EEG embedding space
+- **Cross-modal alignment**: EEG representations align with image semantics (t-SNE visualization)
+- **Subject variability handled**: Archetype-based approach robust to individual differences
 
-A novel contrastive learning approach designed specifically for EEG graph representations.
-
-#### Mechanism
-- **Cluster** EEG graph representations to form **archetype features** for each subject
-- Perform **dual-level contrastive learning**:
-  - **Sequence-level**: Temporal dynamics
-  - **Channel-level**: Spatial patterns
-- Enables the model to identify **individual differences** and **neural representation patterns**
-
-#### Theoretical Foundation
-Essentially implements an **Expectation-Maximization (EM)** optimization strategy to combat:
-- High EEG variability
-- Signal noise
-
-```
-┌─────────────────────────────────────┐
-│   Graph Archetype Contrastive      │
-│         Learning (GAC)             │
-├─────────────────────────────────────┤
-│  1. Cluster EEG graphs → Archetypes│
-│  2. Sequence-level contrastive     │
-│  3. Channel-level contrastive      │
-│  4. EM-style optimization          │
-└─────────────────────────────────────┘
-         ↓
-    Combat variability & noise
-```
-
-### 2️⃣ EEG Graph Transformer (EGT)
-
-An extension of traditional multi-head attention to graph structures.
-
-#### Key Features
-
-| Component | Description |
-|-----------|-------------|
-| **Full-Relation Heads (FR)** | Multi-head attention extended to graph topology |
-| **Laplacian Position Encoding** | Graph Laplacian features as positional encoding for brain region awareness |
-| **Local + Global Dependencies** | Captures dynamic interactions across different brain regions |
-
-#### Architecture
-
-```
-Input EEG Graph
-    ↓
-[Node Features + Laplacian Position Encoding]
-    ↓
-┌─────────────────────────────────┐
-│  Full-Relation Multi-Head       │
-│  Attention (FR-Attention)       │
-│  • Spatial connectivity aware   │
-│  • Functional connectivity aware│
-└─────────────────────────────────┘
-    ↓
-[Local Dependencies] + [Global Dependencies]
-    ↓
-[Graph Representation]
-```
-
----
-
-## Complete SFTG Pipeline
-
-```
-Raw EEG Signal
-    ↓
-┌──────────────────────────────────────┐
-│  Graph Construction                  │
-│  • Spatial connectivity (anatomy)    │
-│  • Functional connectivity (correlation)│
-└──────────────────────────────────────┘
-    ↓
-┌──────────────────────────────────────┐
-│  EEG Graph Transformer (EGT)        │
-│  • Laplacian position encoding       │
-│  • Full-Relation multi-head attention│
-└──────────────────────────────────────┘
-    ↓
-┌──────────────────────────────────────┐
-│  Graph Archetype Contrastive (GAC)  │
-│  • Cluster → Archetypes              │
-│  • Sequence-level contrastive        │
-│  • Channel-level contrastive         │
-└──────────────────────────────────────┘
-    ↓
-Visual Decoding Output
-```
-
----
-
-## Dataset
-
-**THINGS-EEG Dataset**
-
-### Experimental Settings
-
-| Scenario | Description |
-|----------|-------------|
-| **Subject-dependent** | Single subject train/test (within-subject) |
-| **Subject-independent** | Cross-subject generalization (transfer learning) |
-
----
-
-## Baseline Models
-
-- **BraVL**
-- **NICE**
-- **ATM-S**
-- **VE-SDN**
-- **UBP**
-
----
-
-## Key Results
-
-### 1. Semantic Similarity Analysis (RSA)
-
-Model outputs show **clear clustering** by semantic categories:
-- 🐾 Animals
-- 🍎 Food
-- 🔧 Tools
-- And more...
-
-**EEG representations exhibit semantic structure aligned with visual categories.**
-
-### 2. t-SNE Visualization
-
-| Finding | Interpretation |
-|---------|---------------|
-| **High alignment** between EEG representations and image semantics | Model learns **cross-modal consistent neural features** |
-| **Semantic clusters** in embedding space | Neural patterns reflect categorical organization |
-| **Clear separation** between categories | Robust discriminative representations |
-
-#### Visualization Example
-
-```
-t-SNE Embedding Space
-    
-    🐾 Animals cluster
-        • Dog, Cat, Lion...
-    
-    🍎 Food cluster
-        • Apple, Bread, Cake...
-    
-    🔧 Tools cluster
-        • Hammer, Scissors, Wrench...
-    
-→ EEG neural patterns mirror semantic organization
-```
-
----
-
-## Technical Highlights
-
-### Spatial-Functional Integration
-
-| Connectivity Type | Information Captured |
-|-------------------|---------------------|
-| **Spatial** | Anatomical proximity, physical electrode layout |
+| Connectivity | Information |
+|--------------|-------------|
+| **Spatial** | Anatomical proximity, electrode layout |
 | **Functional** | Neural correlation, information flow |
-| **Combined** | Comprehensive brain network dynamics |
+| **Combined** | Comprehensive brain network dynamics 🌟 |
 
-### Graph Laplacian Position Encoding
+- _Why necessary_: 🏥 **Brain-Computer Interfaces (BCIs)** need:
+  - Accurate visual decoding for assistive devices
+  - Robust cross-subject generalization (no per-person calibration)
+  - Interpretable representations showing what brain patterns mean
+</details>
 
-```python
-# Conceptual formulation
-L = D - A  # Laplacian matrix
-λ, V = eigen_decomposition(L)
-position_encoding = V[:, :k]  # First k eigenvectors
+<details>
+<summary><strong>Solutions</strong></summary>
 
-# Encodes brain region topology
-```
+- _Idea_: 💭 Propose **SFTG** combining:
+  - **Spatial + Functional** graph construction
+  - **EEG Graph Transformer (EGT)**: Graph-aware attention with Laplacian position encoding
+  - **Graph Archetype Contrastive (GAC)**: Dual-level (sequence + channel) contrastive learning with EM-style clustering
 
-### EM-Style Optimization in GAC
+- _Method_: 🔧
 
-```
-E-step: Assign EEG graphs to archetypes (clustering)
-M-step: Update archetypes via contrastive learning
-Iterate until convergence
-```
+- **Dataset**: THINGS-EEG (visual stimuli)
+- **Scenarios**: Subject-dependent + **Subject-independent** (cross-subject)
+- **Baselines**: BraVL, NICE, ATM-S, VE-SDN, UBP
 
----
+- _Result_: 📈
 
-## Advantages Over Existing Methods
+**Semantic Analysis (RSA)**:
+- ✅ Clear clustering by categories: 🐾 Animals, 🍎 Food, 🔧 Tools
+- ✅ EEG representations mirror semantic organization
 
-| Feature | Traditional Methods | SFTG |
-|---------|-------------------|------|
-| **Connectivity** | Spatial only or functional only | **Both integrated** |
-| **Architecture** | CNN/RNN/basic Transformer | **Graph-aware Transformer** |
-| **Contrastive Learning** | Image-level only | **Sequence + Channel dual-level** |
-| **Subject Variability** | Poor handling | **Archetype-based robustness** |
-| **Interpretability** | Limited | **High (RSA, t-SNE, graph analysis)** |
+**t-SNE Visualization**:
+- ✅ High alignment between EEG and image semantics
+- ✅ Robust discriminative representations
 
----
+**Performance**:
+- ✅ State-of-the-art on subject-dependent
+- ✅ **Strong cross-subject generalization** (subject-independent)
 
-## Clinical & Research Implications
+| Feature | Traditional | SFTG |
+|---------|-------------|------|
+| Connectivity | Spatial OR Functional | **Both integrated** ✅ |
+| Architecture | CNN/RNN/basic Transformer | **Graph-aware Transformer** ✅ |
+| Contrastive | Image-level only | **Sequence + Channel dual-level** ✅ |
+| Variability | Poor handling | **Archetype-based robustness** ✅ |
 
-| Application | Potential Impact |
-|-------------|-----------------|
-| **Brain-Computer Interfaces (BCI)** | Improved visual decoding for assistive devices |
-| **Cognitive Neuroscience** | Understanding neural coding of visual perception |
-| **Cross-subject Transfer** | Reduced calibration time for BCIs |
-| **Semantic Brain Mapping** | Identifying neural correlates of semantic categories |
-
----
-
-## Conclusion
-
-**SFTG** achieves state-of-the-art EEG visual decoding through:
-
-- 🧠 **Comprehensive modeling** of spatial-functional brain networks
-- 🎯 **Novel contrastive learning** tailored for EEG graphs
-- 🔍 **High interpretability** with semantic alignment
-- 🚀 **Strong generalization** across subjects
-- 📊 **Clear visualization** of learned neural representations
-
-The framework bridges the gap between **brain activity patterns** and **semantic visual understanding**, advancing both theoretical neuroscience and practical BCI applications.
+- _Conclusion_: 🎓 **SFTG achieves state-of-the-art EEG visual decoding** through:
+  - 🧠 **Comprehensive modeling** of spatial-functional brain networks
+  - 🎯 **Novel contrastive learning** tailored for EEG graphs (dual-level, archetype-based)
+  - 🔍 **High interpretability**: Semantic clustering (animals, food, tools), cross-modal alignment
+  - 🚀 **Strong generalization** across subjects (EM-style optimization handles variability)
+  - 📊 **Clear visualization** of learned neural representations
+  
+  Spatial-functional integration + archetype contrastive learning = robust, interpretable visual decoding from brain signals. 👁️🧠
+</details>
+</details>
 
 ---
 
-# DRDCAE-STGNN: An End-to-End Discriminative Autoencoder with Spatio-Temporal Graph Learning for Motor Imagery Classification
+> [*DRDCAE-STGNN: Discriminative Autoencoder with Spatio-Temporal Graph Learning for Motor Imagery*], [Sep 7, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
 
-## Problem Statement
+- _Topic_: 🤖 Motor Imagery (MI) classification for Brain-Computer Interfaces - decoding imagined movements from EEG
+- _Core Author_: Yi Wang, Haodong Zhang and Hongqi Li
+- _Core Group_: Northwestern Polytechnical University
+</details>
 
-**Brain-Computer Interface (BCI)** recognizes user intentions through EEG signals in **Motor Imagery (MI)** tasks. 
+<details>
+<summary><strong>Problems</strong></summary>
 
-### Limitations of Traditional Methods
+- _Main problem_: 🎯 Traditional CNN/RNN models for Motor Imagery (MI) only capture **local features** and ignore **complex spatio-temporal dependencies** between brain regions during imagined movements.
 
-| Approach | Limitation |
-|----------|-----------|
-| **CNN Models** | Only capture local features |
-| **RNN Models** | Ignore complex spatial dependencies |
-| **Both** | Miss **spatio-temporal dependencies** between brain regions |
+- _Focus problem_: 🔍 How to model **both spatial connectivity** (which brain regions interact) and **temporal dynamics** (how activity evolves) for robust MI classification?
 
-This paper proposes a novel framework integrating:
-- **Discriminative Autoencoder**
-- **Spatio-Temporal Graph Neural Network (STGNN)**
+- _Why important_: 💡 Motor imagery involves:
+  - **Spatial patterns**: Motor cortex, sensorimotor regions
+  - **Temporal evolution**: Preparation → execution phases
+  - **Brain connectivity**: Coordinated network activity
+  
+  Traditional models treating channels independently **miss the network-level dynamics** critical for accurate MI decoding.
+</details>
 
----
+<details>
+<summary><strong>Motivations</strong></summary>
 
-## Framework Architecture
+- _Main finding/insight_: 📊 **Dual-objective autoencoder + dynamic graph learning** captures MI patterns:
 
-### 1️⃣ Discriminative Reconstruction-Driven Convolutional Autoencoder (DRDCAE)
+**Key insights**:
+- **Mutual Information (MI)-based graphs** reveal functional brain connectivity
+- **Discriminative latent space** improves class separability
+- **Hierarchical spatio-temporal modeling** captures multi-scale dependencies
 
-A convolutional autoencoder structure optimizing **dual objectives**.
+| Component | Innovation |
+|-----------|-----------|
+| **MI-based adjacency** | Data-driven, adaptive, captures non-linear dependencies |
+| **Dual loss** | Reconstruction + discrimination = better features |
+| **Dynamic graphs** | Subject-specific connectivity patterns |
 
-#### Architecture
+- _Why necessary_: 🏥 **BCI applications** (assistive devices for paralyzed patients) need:
+  - High accuracy across different MI tasks (left/right hand, feet, tongue)
+  - Robust cross-subject performance (no extensive calibration)
+  - Interpretable brain connectivity patterns
+</details>
 
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Propose **DRDCAE-STGNN** combining:
+  - **DRDCAE**: Discriminative autoencoder with dual loss (reconstruction + discrimination)
+  - **STGNN**: Spatio-Temporal GNN with MI-based dynamic graphs
+
+- _Method_: 🔧
+
+**Architecture**:
 ```
-Input EEG Signal (X)
-    ↓
-┌─────────────────────────────┐
-│   Encoder (Conv Layers)     │
-│   X → z (latent space)      │
-└─────────────────────────────┘
-    ↓
-┌─────────────────────────────┐
-│   Latent Space (z)          │
-│   • Reconstruction constraint│
-│   • Discriminative constraint│
-└─────────────────────────────┘
-    ↓
-┌─────────────────────────────┐
-│   Decoder (Deconv Layers)   │
-│   z → X̂ (reconstruction)    │
-└─────────────────────────────┘
-```
-
-#### Dual Optimization Objectives
-
-| Loss Type | Purpose | Formulation |
-|-----------|---------|-------------|
-| **Reconstruction Loss** | Preserve spatio-temporal information | L_recon = ||X - X̂||² |
-| **Discriminative Loss** | Enhance inter-class separability | L_disc = class separation in latent z |
-
-#### Latent Space Constraint
-
-```
-Goal: In latent space z
-• Same class samples → Close together
-• Different class samples → Far apart
-
-Implementation:
-L_total = α·L_recon + β·L_disc
+EEG → DRDCAE (latent z) → Graph (MI-based) → STGNN (Spatial GCN + Temporal GRU) → Classification
 ```
 
-### 2️⃣ Spatio-Temporal Graph Neural Network (STGNN)
+**Datasets**:
+- BCI Competition IV-2a: 4 classes (left hand, right hand, feet, tongue)
+- High Gamma Dataset (BCI-HGD): Binary classification
 
-Models EEG channels as a **dynamic graph** with temporal evolution.
+Baselines: EEGNet, ShallowConvNet, DeepConvNet, RGNN, ST-GCN, DAFNet
 
-#### Graph Construction
+- _Result_: 📈**Performance**:
 
-| Component | Description |
-|-----------|-------------|
-| **Nodes** | EEG channels (electrodes) |
-| **Adjacency Matrix A** | Dynamically generated via **Mutual Information (MI)** between channels |
-| **Temporal Dimension** | Unrolled through sliding windows |
-
-
-#### Mathematical Formulation
-
-**Spatial GCN:**
-```
-H^(l+1) = σ(D^(-1/2) A D^(-1/2) H^(l) W^(l))
-
-where:
-- A: Adjacency matrix (from MI)
-- H^(l): Node features at layer l
-- W^(l): Learnable weights
-```
-
-**Temporal GRU:**
-```
-h_t = GRU(h_{t-1}, x_t)
-
-Captures sequential dependencies across time
-```
-
----
-
-## Datasets
-
-### 1. BCI Competition IV-2a Dataset
-
-| Property | Details |
-|----------|---------|
-| **Task** | Motor Imagery (MI) |
-| **Classes** | 4 classes |
-| **Classes Details** | Left hand, Right hand, Feet, Tongue |
-| **Type** | Multi-class classification |
-
-### 2. High Gamma Dataset (BCI-HGD)
-
-| Property | Details |
-|----------|---------|
-| **Signal Type** | High-frequency EEG |
-| **Task** | Binary classification |
-| **Focus** | High gamma band activity |
-
----
-
-## Baseline Models
-
-### Classical Deep Learning
-- **EEGNet**
-- **ShallowConvNet**
-- **DeepConvNet**
-
-### Graph-Based Methods
-- **RGNN** (Recurrent Graph Neural Network)
-- **ST-GCN** (Spatio-Temporal Graph Convolutional Network)
-
-### Advanced Methods
-- **DAFNet** (Domain Adaptation Framework)
-
----
-
-## Key Innovations
-
-### 1️⃣ Mutual Information-Based Dynamic Graph Modeling
-
-```
-Adjacency Matrix Construction:
-A_{ij} = MI(Channel_i, Channel_j)
-
-where MI measures statistical dependence:
-MI(X,Y) = ∑∑ p(x,y) log(p(x,y)/(p(x)p(y)))
-
-Advantages:
-✓ Data-driven connectivity
-✓ Captures non-linear dependencies
-✓ Adaptive to individual differences
-```
-
-### 2️⃣ Discriminative Latent Feature Constraint
-
-```
-Traditional Autoencoder:
-• Focus: Reconstruction only
-• Issue: Similar latent features for different classes
-
-DRDCAE:
-• Dual objective: Reconstruction + Discrimination
-• Result: Class-separable latent space
-
-L_disc encourages:
-- Intra-class compactness
-- Inter-class separability
-```
-
-### 3️⃣ Unified Spatio-Temporal Modeling
-
-| Traditional Methods | DRDCAE-STGNN |
-|--------------------|--------------|
-| Spatial → Temporal (sequential) | **Simultaneous modeling** |
-| Fixed connectivity | **Dynamic MI-based graphs** |
-| Local features | **Global + Local dependencies** |
-
----
-
-## Experimental Results Summary
-
-### Performance Improvements
-
-| Metric | BCI IV-2a | BCI-HGD |
-|--------|-----------|---------|
-| **Accuracy** | ✅ State-of-the-art | ✅ State-of-the-art |
-| **Robustness** | ✅ Cross-subject stable | ✅ Consistent |
-| **Interpretability** | ✅ Clear MI patterns | ✅ Functional connectivity |
-
-### Cross-Dataset Validation
-
-✅ **BCI Competition IV-2a**: Multi-class MI classification  
-✅ **High Gamma Dataset**: Binary classification  
-✅ Demonstrates **robustness** and **generalization**
-
----
-
-## Advantages Over Existing Methods
+✅ **State-of-the-art** on BCI IV-2a (4-class)
+✅ **State-of-the-art** on BCI-HGD (binary)
+✅ **Cross-subject robustness**
+✅ **Interpretable MI connectivity maps**
 
 | Aspect | Traditional CNN/RNN | DRDCAE-STGNN |
 |--------|-------------------|--------------|
-| **Spatial Modeling** | Local convolution | Graph-based global connectivity |
-| **Temporal Modeling** | Sequential (RNN) | Hierarchical GRU with spatial context |
-| **Feature Learning** | Reconstruction or classification | **Both simultaneously** |
-| **Brain Connectivity** | Fixed/ignored | **Dynamic MI-based** |
-| **Interpretability** | Low | **High (MI maps, latent space)** |
-| **Robustness** | Subject-dependent | **Strong cross-subject generalization** |
+| **Spatial** | Local convolution | **Global graph connectivity** ✅ |
+| **Temporal** | Sequential RNN | **Hierarchical GRU + spatial context** ✅ |
+| **Features** | Reconstruction OR classification | **Both simultaneously** ✅ |
+| **Connectivity** | Fixed/ignored | **Dynamic MI-based** ✅ |
+| **Interpretability** | Low | **High (MI maps, latent space)** ✅ |
+
+- _Conclusion_:🎓 **DRDCAE-STGNN advances Motor Imagery BCI** through:
+  - 🧠 **Dynamic brain connectivity modeling** via mutual information (adaptive, subject-specific)
+  - 🎯 **Discriminative feature learning** with dual-objective autoencoder (reconstruction + separation)
+  - 🔗 **Spatio-temporal integration** via hierarchical GNN (spatial GCN + temporal GRU)
+  - 📈 **State-of-the-art performance** on multiple MI datasets
+  - 🔍 **High interpretability** with functional connectivity insights
+  - 🚀 **Robust generalization** across subjects and tasks
+  
+  Discriminative autoencoding + MI-based dynamic graphs = superior MI classification with mechanistic understanding. 🤖🧠
+
+</details>
+</details>
 
 ---
 
-## Applications
+> [*Towards Generalizable Learning Models for EEG-Based Identification of Pain Perception*], [Aug 12, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
 
-| Domain | Application |
+- _Topic_: 🧠 EEG-based pain perception recognition with cross-subject generalization
+- _Author_: Mathis Rezzouk, Fabrice Gagnon, Alyson Champagne, Mathieu Roy, Philippe Albouy, Michel-Pierre Coll, Cem Subakan
+- _Core Group_: McGill University, Concordia University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Brain-signal models struggle to recognize pain across different individuals because each person's EEG signal exhibits significant variability. Most existing systems only perform well for the specific person they were trained on.
+
+- _Focus problem_: 🔍 How well can different machine learning and deep learning models identify pain when tested on previously unseen individuals (cross-subject generalization)?
+
+- _Why important_:
+
+| Benefit | Impact |
+|---------|--------|
+| **🏥 Objective pain assessment** | No need for subjective self-reporting |
+| **⚡ No per-person retraining** | Deploy once, use for any patient |
+| **👶 Critical patient populations** | Helps patients unable to communicate pain (dementia, coma, infants) |
+
+> ❌ Without cross-person generalization, these models cannot be deployed in real clinical settings.  
+> ✅ A robust model must recognize brain patterns of pain that are consistent across everyone.
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_:
+
+📊 **Simple models** work great when training and testing on the same person but **fail badly on new people**.
+🚀 **Deep learning models**, especially **graph-based ones**, handle new people **much better**.
+
+| Model Type | Within-Person | Cross-Person | Generalization |
+|------------|---------------|--------------|----------------|
+| **SVM** | ~90-95% | ~45-50% ⚠️ | ❌ Poor (-45% drop) |
+| **Logistic Regression** | ~85-90% | ~40-50% ⚠️ | ❌ Poor (-40% drop) |
+| **Deep4Net** | ~92% | ~70-75% | ✅ Good (-20% drop) |
+| **GGN (Graph)** | ~93% | **~75-80%** | ✅✅ **Best (-15% drop)** |
+
+- _Why necessary_: 🏥 A robust model must recognize brain patterns of pain that are consistent across everyone. Current person-dependent models require calibration for each new patient, making clinical deployment impractical.
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Compare many models—from simple classifiers (SVM, Logistic Regression) to advanced neural networks (Deep4Net, EEGNet, **Graph Neural Networks**)—to see which ones can best find shared patterns of pain perception across people.
+
+- _Method_: 🔧 Collected EEG data from **108 subjects** exposed to **heat pain** and **unpleasant sounds**. Carefully preprocessed the data, trained several models, and tested performance in two scenarios:
+  - **Subject-dependent**: Train & test on same person
+  - **Subject-independent**: Train on some people, test on completely new people ⭐
+
+- _Result_: 📈
+  - **Classical ML** (SVM, LogReg): ~90-95% within-person → ~45-50% cross-person ❌ (massive failure)
+  - **Deep4Net**: ~92% within-person → ~72% cross-person ✅ (-20% drop)
+  - **GGN (Graph)**: ~93% within-person → **~78% cross-person** 🏆 (-15% drop, **best generalization**)
+
+- _Conclusion_: 🎓 Deep learning—especially **graph-based models that model brain connections**—can capture pain-related brain activity that stays similar across different people. **Brain connectivity > individual channel patterns**. This makes them promising for future real-world, **person-independent pain monitoring systems** with ~78% zero-calibration accuracy. 🏥
+</details>
+</details>
+
+---
+
+> [*Graph Convolutional Neural Networks to Model the Brain for Insomnia*], [Jul 2, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 😴 EEG-based brain network modeling for insomnia detection and understanding altered brain connectivity during sleep
+- _Author_: Kevin Monteiro, Sam Nallaperuma-Herzberg, Martina Mason, Steve Niederer
+- _Group_: University of Cambridge
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 It's hard to understand **how insomnia changes the brain's activity during sleep** because brain signals are **complex, noisy, and vary a lot between people**.
+
+- _Focus problem_: 🔍 How to use **EEG signals** to build a model of brain behavior in insomnia patients, identifying **which brain regions and signal patterns differ** from normal sleepers?
+
+- _Why important_: 💡 Many people suffer from insomnia, and current treatments often have **side effects**. Better understanding of insomnia brain function may help:
+  - 🏥 **Safer diagnosis** (non-invasive, objective)
+  - 💊 **More effective treatments** (personalized, potentially non-drug)
+  - 🧠 **Mechanistic insights** into sleep disorder neurobiology
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **Brain connections near motor, sensory, and auditory areas** play an important role in identifying insomnia:
+
+**Key discoveries**:
+- 🔑 **Critical connections**: C4-P4, F4-C4, C4-A1 (motor-sensory-auditory regions)
+- ⏱️ **Optimal time window**: **50-second segments** capture meaningful brain activity patterns
+- 📍 **Spatial distance matters**: Including electrode proximity improves accuracy
+
+**Performance drops** when removing:
+| Removed Connection | Brain Region | Impact |
+|-------------------|--------------|--------|
+| **C4-P4** | Motor-Sensory | Largest accuracy drop |
+| **F4-C4** | Frontal-Motor | Significant drop |
+| **C4-A1** | Motor-Auditory | Notable drop |
+
+→ These regions are **frequently disturbed in insomnia**
+
+- _Why necessary_: 🏥 Without understanding **neural patterns of insomnia**, it's difficult to:
+  - Develop **personalized treatments**
+  - Create **non-drug interventions**
+  - Provide **objective diagnosis**
+  
+  Modeling the brain's network provides a clearer picture of **how insomnia affects brain communication**.
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Build a **"brain network" from EEG data**:
+  - **Nodes**: EEG channels (brain regions)
+  - **Edges**: Connection strength (how brain areas interact)
+  - **Task**: Train a **Graph Neural Network (GNN)** to classify insomnia vs. healthy brain patterns
+
+- _Method_: 🔧
+
+**Data collection**:
+- **~13-hour continuous EEG recordings** per subject
+- Both **insomnia patients** and **healthy controls**
+
+**Pipeline**:
+```
+Continuous EEG → Time windows → Filtering → Brain graphs → GCN → Classification
+```
+
+**Graph construction**:
+1. **Nodes**: EEG channels
+2. **Node features**: Power in different **frequency bands** (δ, θ, α, β)
+3. **Edge weights**: Combination of:
+   - **Signal similarity** (functional connectivity)
+   - **Spatial distance** (electrode proximity) ⭐
+
+**Model**: Graph Convolutional Neural Network (GCN)
+
+**Analysis windows**: Tested different durations (found **50 seconds optimal**)
+
+- _Result_: 📈
+
+**Critical brain connections** (removal causes largest accuracy drops):
+
+| Connection | Region | Clinical Relevance |
+|-----------|--------|-------------------|
+| **C4-P4** 🏆 | Motor-Parietal-Sensory | Often disturbed in insomnia |
+| **F4-C4** | Frontal-Motor | Arousal & motor control |
+| **C4-A1** | Motor-Auditory | Sensory processing |
+
+**Insights**:
+- 🧠 Motor, sensory, and auditory areas show **altered connectivity** in insomnia
+- ⏱️ 50-second window captures **optimal temporal dynamics**
+- 📊 Graph-based modeling reveals **network-level disruptions** (not just individual channels)
+
+- _Conclusion_: 🎓 **Graph-based deep learning reveals how insomnia changes brain communication patterns**:
+  - 🔍 **Identifies key brain regions** (motor-sensory-auditory network)
+  - ⏱️ **Establishes effective analysis strategy** (50-second windows, spatial+functional connectivity)
+  - 🏥 **Lays groundwork for brain-based, non-invasive sleep diagnostics**
+  - 🧠 **Network perspective** > individual channel analysis
+  - 💡 **Potential for personalized, non-drug treatments** based on connectivity patterns
+  
+  Brain network modeling captures insomnia's disrupted neural communication, opening paths to objective diagnosis and targeted interventions. 😴🧠
+</details>
+</details>
+
+---
+
+> [*Transformer-based EEG Decoding- A Survey*], [Jul 3, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🤖 Comprehensive review of Transformer models for EEG signal decoding across multiple brain-related tasks.
+- _Author_: Haodong Zhang, Hongqi Li
+- _Group_: Northwestern Poly-technical University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 It's difficult for computers to **read and understand brain signals (EEG)** because the data are:
+  - 📊 **Noisy**
+  - 👥 **Vary across people**
+  - ⚡ **Change quickly over time**
+  
+  Traditional models often **miss long-term relationships** between brain activities.
+
+- _Focus problem_: 🔍 How have **Transformer models** (good at finding long-range patterns) been used to better **decode and interpret EEG signals** in different brain-related tasks?
+
+- _Why important_: 💡 EEG decoding is used in many **real-world areas**:
+  - 😴 **Sleep monitoring**
+  - 😊 **Emotion recognition**
+  - 🏥 **Disease detection** (epilepsy, dementia, etc.)
+  - 🧠 **Brain-Computer Interfaces (BCI)**
+  
+  Improving EEG decoding could lead to:
+  - ✅ Better health care
+  - ✅ More natural brain-computer interfaces
+  - ✅ Help people with disabilities communicate
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **Transformers understand both short and long patterns** in EEG data much better than older models:
+
+**Key insights**:
+
+| Model Type | Capability |
+|------------|-----------|
+| **Pure Transformers** | Capture long-range temporal dependencies |
+| **Hybrid (Transformer + CNN)** | Local details + global context |
+| **Hybrid (Transformer + GNN)** | Spatial connectivity + temporal patterns |
+| **EEG-specific Transformers** | Tailored to brain signal characteristics |
+
+**Performance highlights**:
+- 😊 **Emotion recognition**: Up to **99% accuracy**
+- 😴 **Sleep staging**: **84-85% accuracy**
+- ⚡ **Epilepsy detection**: Strong results
+- 🤖 **Motor imagery**: Robust classification
+
+- _Why necessary_: 🏥 Traditional models have **critical limitations**:
+
+| Model | Limitation |
+|-------|-----------|
+| **CNNs** | Only capture **local patterns** (miss global context) |
+| **RNNs** | Limited to **short-term dependencies** (vanishing gradients) |
+| **Both** | Can't handle brain's **wide and long-range connections** |
+
+The brain works through **global, long-range connections** → Need models that handle this **global context** ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 **Gather and organize existing research** on how Transformers are used for EEG decoding:
+  - Compare different designs
+  - Identify which ideas work best for different brain tasks
+  - Provide systematic review and taxonomy
+
+- _Method_: 🔧
+
+**Review scope**:
+- 📚 **Over 160 studies** applying Transformers to EEG analysis
+- 🗂️ **Grouped into 3 model types**:
+
+| Type | Description | Example |
+|------|-------------|---------|
+| **1. Basic Transformers** | Standard self-attention architecture | Vanilla Transformer, BERT-style |
+| **2. Hybrid Models** | Transformer + CNN/RNN/GNN | Local features + global context |
+| **3. EEG-specific Transformers** | Redesigned for brain signals | Custom attention, position encoding |
+
+**Tasks reviewed**:
+- 😊 Emotion recognition
+- 😴 Sleep staging
+- ⚡ Epilepsy detection
+- 🤖 Motor imagery (movement imagination)
+
+- _Result_: 📈
+
+**Performance comparison**:
+
+| Task | Best Accuracy | Observation |
+|------|--------------|-------------|
+| **Emotion recognition** 😊 | **Up to 99%** 🏆 | Transformers >> traditional models |
+| **Sleep staging** 😴 | **84-85%** | Consistent improvement |
+| **Epilepsy detection** ⚡ | Strong results | Reliable seizure prediction |
+| **Motor imagery** 🤖 | Robust | Better BCI control |
+
+**Advantages**:
+- ✅ **Long-range dependencies**: Capture global brain dynamics
+- ✅ **Self-attention**: Identify important brain regions automatically
+- ✅ **Parallelization**: Faster training than RNNs
+- ✅ **Hybrid designs**: Combine strengths of multiple architectures
+
+**Challenges** ⚠️:
+- ❌ **Data hungry**: Require lots of labeled EEG data
+- ❌ **Computation cost**: High memory and processing requirements
+- ❌ **Hard to interpret**: Black-box attention mechanisms
+- ❌ **Overfitting risk**: Without sufficient data
+
+**Hybrid model benefits**:
+
+| Combination | Advantage |
+|------------|-----------|
+| **Transformer + CNN** | Local signal details + global context |
+| **Transformer + GNN** | Brain connectivity + temporal patterns |
+| **Transformer + RNN** | Sequential processing + long-range attention |
+
+- _Conclusion_: 🎓 **Transformers are becoming the leading approach for understanding brain signals**:
+  - 🏆 **Consistently outperform older models** (CNNs, RNNs) across all tasks
+  - 🧠 **Capture global brain dynamics** that traditional models miss
+  - 🔧 **Hybrid designs** (Transformer + CNN/GNN) work best for EEG
+  - ⚠️ **Challenges remain**: Data shortage, high computation cost, low interpretability
+  - 🚀 **Great promise** for building more **general, reliable, human-like** brain decoding systems
+  
+  Future directions:
+  - 📊 **Self-supervised learning** to reduce data requirements
+  - 🔍 **Interpretable attention** for clinical trust
+  - ⚡ **Efficient architectures** for real-time BCI
+  - 🌐 **Cross-subject transfer** for generalization
+  
+  Transformers + EEG = next generation of brain signal understanding. 🧠🤖
+</details>
+</details>
+
+---
+
+> [*EEG2GAIT- A Hierarchical Graph Convolutional Network for EEG-based Gait Decoding*], [Apr 2, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🚶 EEG-based gait (walking) motion prediction using brain network modeling for brain-controlled prosthetics and rehabilitation
+- _Author_: Xi Fu, Rui Liu, Aung Aung Phyo Wai, Hannah Pulferer, Neethu Robinson, Gernot R Mu ̈ller-Putz, Cuntai Guan
+- _Group_: Nanyang Technological University, Graz University of Technology
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 It is very hard to **predict how the brain controls walking** by reading EEG signals because these signals are:
+  - 📊 **Noisy**
+  - ⚡ **Change quickly**
+  - 🧠 **Involve complex interactions between many brain regions**
+
+- _Focus problem_: 🔍 How to teach a computer model to understand how **patterns in EEG data relate to leg movements during walking**, using both:
+  - ⏱️ **Timing** (temporal patterns)
+  - 🔗 **Spatial connections** between different brain areas (brain network)
+
+- _Why important_: 💡 Understanding how the brain coordinates walking could help:
+  - 🏥 **Better rehabilitation tools** for people with movement disorders (stroke, Parkinson's)
+  - 🦾 **Brain-controlled prosthetic legs** that move naturally
+  - 🧠 **Neuroscience insights** into motor control mechanisms
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **EEG2GAIT** learns both **short-term and long-term brain activity patterns** and connects them to specific leg movements:
+
+**Key discoveries**:
+- 🏆 **Correlation ≈ 0.93** between predicted and real joint motion
+- 📈 **10-15% better** than other models
+- 🧠 **Central motor area signals** most important for predicting gait
+- 🔗 **Brain network connections** critical for accurate prediction
+
+**Most informative brain areas**:
+| Location | Brain Region | Clinical Relevance |
+|----------|--------------|-------------------|
+| **Central scalp (C3, Cz, C4)** | Primary motor cortex | Controls voluntary leg movements |
+| **Midline electrodes** | Supplementary motor area | Gait coordination & planning |
+
+- _Why necessary_: 🏥 Older models have **critical limitations**:
+
+| Approach | Problem |
+|----------|---------|
+| **Flat time sequences** | Ignore how brain regions **communicate** |
+| **Single-channel analysis** | Miss **network-level coordination** |
+| **Local patterns only** | Can't capture **global motor control** |
+
+Walking is **not controlled by one spot** — it's a **network process** 🔗  
+→ Understanding **spatial connections is essential** ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Represent the **brain as a network**:
+  - **Nodes**: EEG electrodes (brain regions)
+  - **Edges**: Connections showing how brain areas interact
+  - **Architecture**: Hierarchical model learning patterns from **local → global levels**
+  - **Output**: Link brain activity directly to **joint movements** (hip, knee, ankle)
+
+- _Method_: 🔧
+
+**Data collection**:
+- 👥 **50 people** walking naturally
+- 📊 **EEG signals** + **leg joint angles** (synchronized)
+- 🦵 **6 joint angles**: Hip, knee, ankle (both legs)
+
+**EEG2GAIT Architecture**:
+
+```
+EEG Input
+    ↓
+[1] Short-term Rhythm Module
+    ↓
+[2] Graph Network (spatial connections)
+    ↓
+[3] Temporal Module (long-term patterns)
+    ↓
+Joint Angle Prediction (hip, knee, ankle)
+```
+
+**Innovation**: **Time-frequency loss** ensures predictions match both:
+- ⏱️ Temporal dynamics (phase of gait cycle)
+- 🎵 Frequency content (rhythm of walking)
+
+- _Result_: 📈
+
+**Performance**:
+
+| Metric | EEG2GAIT | Improvement |
+|--------|----------|-------------|
+| **Correlation** | **≈0.93** 🏆 | **10-15% better** than baselines |
+| **Consistency** | ✅ Robust | Across different subjects |
+| **Interpretability** | ✅ High | Identifies key brain regions |
+
+**Key brain regions identified**:
+- 🧠 **Central motor cortex** (C3, Cz, C4): Most predictive
+- 🔗 **Midline areas**: Gait coordination
+- 📊 Aligns with **known motor control neuroscience** ✅
+
+**Comparison with baselines**:
+
+| Model Type | Approach | Performance |
+|------------|----------|-------------|
+| **Traditional RNN** | Time sequences only | Baseline |
+| **CNN-based** | Local patterns | Better than RNN |
+| **EEG2GAIT** | **Network + Time-frequency** | **Best (10-15% ↑)** 🏆 |
+
+**Advantages**:
+- ✅ **Hierarchical learning**: Local → global patterns
+- ✅ **Brain network modeling**: Captures spatial interactions
+- ✅ **Time-frequency loss**: Better temporal accuracy
+- ✅ **Interpretable**: Identifies critical brain regions
+- ✅ **Generalizable**: Consistent across subjects
+
+- _Conclusion_: 🎓 **EEG2GAIT "decodes" walking movements from EEG** more accurately and clearly than before:
+  - 🏆 **≈0.93 correlation**, 10-15% better than other models
+  - 🧠 **Brain network modeling** > flat time sequences (captures spatial interactions)
+  - ⏱️ **Time-frequency learning** captures both rhythm and phase
+  - 🔍 **Identifies motor cortex** as key region (validates neuroscience)
+  - 🚀 **Step toward practical brain-controlled walking systems**
+  - 🏥 **Deeper understanding** of how brain organizes movement
+  
+  Applications:
+  - 🦾 Brain-controlled prosthetic legs
+  - 🏥 Rehabilitation for stroke/Parkinson's patients
+  - 🧠 Neuroscience research on motor control
+  - 📊 Gait analysis for clinical diagnosis
+  
+  Brain network + time-frequency modeling = accurate gait decoding from noisy EEG signals. 🚶🧠
+</details>
+</details>
+
+---
+
+> [*Flexible and Explainable Graph Analysis for EEG-based Alzheimer’s Disease Classification*], [Apr 2, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🧠 Early Alzheimer's disease detection from EEG using learnable brain networks with explainability
+- _Author_: Jing Wang, Jun-En Ding, Feng Liu, Elisa Kallioniemi, Shuqiang Wang, Wen-Xiang Tsai, Albert C. Yang
+- _Group_: Stevens Institute of Technology, New Jersey Institute of Technology, National Yang-Ming Chiao Tung University, Chinese Academy of Sciences
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 It's difficult to **detect Alzheimer's disease early** using EEG signals because:
+  - 🧠 Brain activity is **complex**
+  - ⚡ **Changes over time**
+  - 👥 **Varies from person to person**
+  
+  Most existing computer models can **classify patients** but **can't explain why or how** they make decisions.
+
+- _Focus problem_: 🔍 How to build a model that **both**:
+  - ✅ Identifies Alzheimer's disease from EEG data
+  - ✅ **Explains which brain regions and connections** are most affected
+
+- _Why important_: 💡 Early and reliable detection of Alzheimer's is critical for treatment:
+  - 🏥 Current medical scans (MRI, PET) are **expensive and slow**
+  - 📊 EEG offers a **cheaper and faster** alternative
+  - 🔍 If a model can read it **accurately and transparently** → more **accessible early screening**
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **Letting the computer learn how brain regions connect** (instead of fixing connections in advance) leads to:
+  - 📈 **Higher accuracy**
+  - 🔍 **Better understanding** of which brain parts are disrupted in Alzheimer's
+
+**Key brain regions identified**:
+| Brain Region | Role | Alzheimer's Impact |
+|--------------|------|-------------------|
+| **Frontal** | Executive function, memory | Most affected |
+| **Temporal** | Memory processing | Severely disrupted |
+| **Parietal** | Spatial processing, attention | Significantly impacted |
+
+→ Results **match neuroscience knowledge** ✅
+
+- _Why necessary_: 🏥 Most earlier models have **critical limitations**:
+
+| Approach | Problem |
+|----------|---------|
+| **Fixed connections** | Assume static relationships between EEG channels |
+| **Ignore disease changes** | Can't capture how brain connections **change in disease** |
+| **Not person-specific** | Miss **dynamic and individual patterns** |
+
+A **flexible, learnable structure** is necessary to capture these patterns ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Represent the **brain as a network**:
+  - **Nodes**: EEG channels (brain regions)
+  - **Edges**: Show how different areas interact
+  - **Train a model** that learns both local and global brain patterns
+  - **Produce attention scores** showing which nodes and links matter most for Alzheimer's detection
+
+- _Method_: 🔧
+
+**Model: FEGL (Flexible Explainable Graph Learning)**
+
+**Architecture components**:
+
+| Component | Function |
+|-----------|----------|
+| **Learnable brain network** | Learns connections based on **EEG signal similarity** (not fixed) |
+| **Multiple layers** | Capture both **small-scale and large-scale** brain activity |
+| **Explanation module** | Highlights brain regions & connections responsible for decision |
+
+**Pipeline**:
+```
+EEG Data → Learn Brain Network → Multi-layer Graph Processing → Classification + Explanation
+```
+
+**Data**: EEG from Alzheimer's patients and healthy people
+
+- _Result_: 📈
+
+**Performance**:
+
+| Model | Accuracy | Explainability |
+|-------|----------|----------------|
+| **SVM** | Lower | ❌ No |
+| **CNN** | Lower | ❌ No |
+| **Traditional GNN** | Lower | ❌ Limited |
+| **FEGL** | **~89%** 🏆 | ✅ **High** |
+
+**Advantages**:
+
+| Feature | FEGL | Traditional Models |
+|---------|------|-------------------|
+| **Brain connections** | **Learnable** ✅ | Fixed ❌ |
+| **Accuracy** | **~89%** 🏆 | Lower |
+| **Explainability** | **High** ✅ | Low/None ❌ |
+| **Disease-specific patterns** | **Captures** ✅ | Misses ❌ |
+
+- _Conclusion_: 🎓 By combining **flexibility and explainability**, FEGL provides:
+  - 📈 **High accuracy** (~89%)
+  - 🔍 **Clear insight** into how Alzheimer's alters brain connectivity
+  - 🧠 **Identifies affected regions** (frontal, temporal, parietal)
+  - 💰 **Practical, low-cost tool** for early Alzheimer's detection (EEG vs. MRI/PET)
+  - 🏥 **Understanding** of how disease changes brain communication patterns
+  
+  Flexible learnable networks + explainability = accurate and interpretable Alzheimer's detection from EEG. 🧠💡
+</details>
+</details>
+
+---
+
+> [*Geometric Machine Learning on EEG Signals*], [Feb 27, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 📐 Discovering hidden geometric structure in EEG signals for accurate brain-computer interface decoding
+- _Author_: Benjamin J. Choi
+- _Group_: Kempner Institute at Harvard University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 It's very hard to **understand brain activity from EEG signals** because they are:
+  - 📊 **Noisy**
+  - 📈 **High-dimensional**
+  - ⚡ **Change quickly**
+  
+  This makes it difficult for computers to **accurately detect what a person is thinking or doing** from raw EEG data.
+
+- _Focus problem_: 🔍 How to find the **hidden structure inside EEG signals** — their **"shape" or geometry** — so machines can learn how **different thoughts or mental states are organized** in the brain?
+
+- _Why important_: 💡 If we can discover these **geometric patterns** in brain signals:
+  - 🤖 **More accurate** brain-computer interfaces
+  - ⚡ **Faster** BCI systems
+  - 📊 **Easier to train** (less data needed)
+  
+  Applications:
+  - 🗣️ **Communication** for people with paralysis
+  - 🏥 **Early diagnosis** of neurological diseases
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **EEG signals live on a lower-dimensional geometric space**:
+  - Although EEG data **looks messy**, it follows a **consistent underlying pattern**
+  - By **cleaning signals** and **learning this geometry**, computers can **separate mental states almost perfectly**
+
+**Key insight**:
+| Traditional View | Geometric View |
+|-----------------|----------------|
+| EEG = messy high-D data | EEG = clean low-D manifold 📐 |
+| Treat as flat numbers | Discover curved structure ✅ |
+| Hard to classify | Nearly perfect separation 🏆 |
+
+- _Why necessary_: 🏥 Traditional models have **critical limitations**:
+
+| Approach | Problem |
+|----------|---------|
+| **Flat numbers** | Ignore how brain regions **interact** |
+| **Simple time series** | Miss **network relationships** |
+| **Channel-by-channel** | Individual signals less meaningful |
+
+Brain activity is better understood as a **network with curved geometric structure** 📐  
+→ **Relationships between regions** carry more meaning than individual signals ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Combine **denoising + frequency analysis + geometric learning** into one pipeline:
+
+| Step | Purpose |
+|------|---------|
+| **1. Clean EEG** | Lightweight Transformer model (AT-AT) removes noise |
+| **2. Build network** | Capture how brain regions connect |
+| **3. Reveal geometry** | Smooth and reshape to show true geometric form |
+| **4. Classify** | Small neural network predicts different thoughts |
+
+- _Method_: 🔧
+
+**Pipeline**:
+```
+Raw EEG → AT-AT Denoising → Graph Construction → Geometric Processing → Classification
+```
+
+**Detailed steps**:
+
+| Step | Description |
+|------|-------------|
+| **Denoising (AT-AT)** | Remove noise like muscle artifacts |
+| **Graph construction** | Nodes = EEG channels, Edges = relationships |
+| **Geometric smoothing** | Mathematical steps: frequency transform, neighborhood mapping, smoothing |
+| **Compact representation** | Build low-dimensional manifold of brain activity |
+| **Graph network** | Learn patterns in geometric space |
+
+**Task**: Predict what person was imagining (e.g., thinking of a number or not)
+
+- _Result_: 📈
+
+**Performance**:
+
+| Metric | Result |
+|--------|--------|
+| **Accuracy** | **~97%** 🏆 |
+| **Data requirement** | Works with **small datasets** ✅ |
+| **Key information source** | **Brain region connections + curvature** (not individual channels) |
+| **Denoising impact** | **Greatly improved** pattern clarity |
+
+**Key findings**:
+- 🏆 **~97% accuracy** in distinguishing mental states
+- 📐 Most useful info from **how brain regions connect and curve together**
+- 🔍 Individual EEG channels alone → **less meaningful**
+- ✨ Denoising step → **critical for clarity**
+
+**Advantages**:
+
+| Feature | Geometric Approach | Traditional Approach |
+|---------|-------------------|---------------------|
+| **Data view** | **Curved manifold** 📐 | Flat vectors |
+| **Accuracy** | **~97%** 🏆 | Lower |
+| **Data efficiency** | **Small datasets** ✅ | Requires large data |
+| **Interpretability** | **Geometric structure** ✅ | Black box ❌ |
+| **Brain relationships** | **Captured** ✅ | Ignored ❌ |
+
+- _Conclusion_: 🎓 **Brain signals have hidden geometric structure that machines can learn**:
+  - 📐 **EEG lives on lower-dimensional manifold** (not messy high-D space)
+  - 🧠 Viewing EEG as **curved network** (not raw data) → decode thoughts more clearly
+  - 🏆 **~97% accuracy** even with small datasets
+  - 🔍 **Relationships + geometry** > individual channel values
+  - ✨ **Denoising critical** for revealing geometric patterns
+  - 🚀 Foundation for future BCIs that are both **accurate and interpretable**
+  
+  Applications:
+  - 🤖 High-accuracy brain-computer interfaces
+  - 🗣️ Communication systems for paralysis
+  - 🏥 Neurological disease diagnosis
+  - 📊 Understanding brain organization
+  
+  Geometric manifold learning = unlocking hidden structure in noisy EEG signals. 📐🧠
+</details>
+</details>
+
+---
+
+> [*Subject Representation Learning from EEG using Graph Convolutional Variational Autoencoders (GC-VASE)*], [Jan 13, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🧬 Disentangling personal brain signatures from task information in EEG for personalized systems and biometric identification
+- _Core Author_: Aditya Mishra, Ahnaf Mozib Samin, Ali Etemad, Javad Hashemi
+- _Core Group_: Queen’s University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 EEG signals:
+  - 👥 **Vary widely between people**
+  - 📊 **Contain a lot of random noise**
+  
+  Most models **cannot clearly capture** what makes one person's brain activity unique. They **mix up personal traits** with other unrelated information.
+
+- _Focus problem_: 🔍 How to **separate** the **"personal features"** of brain signals from other **task-related or noisy information**, so computers can understand what **truly defines each individual's EEG pattern**?
+
+- _Why important_: 💡 Learning each person's brain signature enables:
+  - 🤖 **Personalized brain-computer systems**
+  - 🏥 **Medical tools that adapt to patients**
+  - 🔐 **Secure biometric identification**
+  - 🧠 Technology that **recognizes individual differences** in human brain
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 By **splitting the model's internal feature space** into two parts:
+  - 🧬 **Personal information** (who)
+  - 🎯 **Everything else** (task, noise)
+  
+  → The system can **recognize individuals much more accurately**. This separation makes the model both **cleaner and more general**.
+
+**Key insight**:
+
+| Space | Content | Purpose |
+|-------|---------|---------|
+| **Subject space** | Personal identity features 🧬 | "Who the person is" |
+| **Residual space** | Task + noise + variations | "What's happening" |
+
+- _Why necessary_: 🏥 Traditional models have **critical problems**:
+
+| Traditional Approach | Problem |
+|---------------------|---------|
+| **Learn everything in one space** | Confusion between who vs. what |
+| **No separation** | Unstable with new people/recordings |
+| **Mixed representations** | Can't isolate personal traits |
+
+**Separating** these two types of information → model more **stable** when seeing **new people or new EEG recordings** ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Represent **EEG data as a network** of connected brain regions and train a model that:
+  - Encodes signals into **hidden "latent space"**
+  - **Divides latent space** into two parts:
+    - 🧬 **Personal identity features**
+    - 🎯 **Other unrelated variations**
+  - Uses **contrastive training** to:
+    - ✅ Keep signals from **same person close together**
+    - ❌ Push signals from **different people far apart**
+
+- _Method_: 🔧
+
+**Model: GC-VASE (Graph Contrastive Variational AutoEncoder for Subject-specific learning)**
+
+**Architecture**:
+
+| Component | Function |
+|-----------|----------|
+| **Graph network** | EEG channels as nodes connected by relationships |
+| **Variational autoencoder** | Compress EEG into smaller internal space |
+| **Split latent space** | "Subject" part + "Residual" part |
+| **Contrastive learning** | Strengthen grouping of same-person data |
+| **Adapter layer** | Quick adjustment to new users (no full retraining) |
+
+**Pipeline**:
+```
+EEG Network → Compress to Latent Space → [Subject Part | Residual Part] → Contrastive Training
+```
+
+**Testing**: Two large EEG datasets covering multiple brain tasks
+
+- _Result_: 📈
+
+**Performance**:
+
+| Metric | GC-VASE | Previous Methods |
+|--------|---------|------------------|
+| **Same dataset accuracy** | **~90%** 🏆 | ~80% |
+| **Improvement** | **+10%** | Baseline |
+| **Different dataset accuracy** | **~70%** 🏆 | Lower |
+| **Generalization** | ✅ Strong | ❌ Weak |
+
+**Advantages**:
+
+| Feature | GC-VASE | Traditional Models |
+|---------|---------|-------------------|
+| **Feature separation** | **Personal + Non-personal split** ✅ | Mixed together ❌ |
+| **Accuracy** | **~90%** 🏆 | ~80% |
+| **Cross-dataset** | **~70%** ✅ | Poor ❌ |
+| **New user adaptation** | **Fast (adapter)** ✅ | Slow retraining ❌ |
+| **Interpretability** | **Clear separation** ✅ | Unclear ❌ |
+
+- _Conclusion_: 🎓 By teaching the model to **separate who from what**, the study creates a **clearer and more flexible way** to learn individual brain signatures:
+  - 🏆 **~90% accuracy** (+10% improvement)
+  - 🧬 **Successful disentanglement** of personal vs. task features
+  - 🌐 **Strong generalization** (~70% on different dataset)
+  - 📊 **Visual confirmation** of feature separation
+  - ⚡ **Quick adaptation** to new users
+  - 🚀 **Basis for future**:
+    - 🤖 Personalized brain-computer systems
+    - 🏥 Mental health tools (individual baselines)
+    - 🔐 EEG-based identification technologies
+  
+  Disentangled graph contrastive learning = clearer, more flexible individual brain signature extraction. 🧬🧠
+</details>
+</details>
+
+---
+
+> [*Quantum Cognition-Inspired EEG-based Recommendation via Graph Neural Networks*], [Jan 5, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🧠 Brain-signal-driven recommendation system using quantum cognition theory and graph neural networks
+- _Core Author_: Jinkun Han, Wei Li, Yingshu Li, Zhipeng Cai
+- _Core Group_: Georgia State University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Traditional recommendation systems can only **guess what users might like** based on:
+  - 📊 **Past clicks or ratings**
+  - ❌ **No way of knowing** what people actually **think or feel in real time**
+  
+  This gap makes recommendation systems **slow to adapt** to users' **changing moods and interests**.
+
+- _Focus problem_: 🔍 How to build a recommendation system that can **directly understand a person's current thoughts** from their **brain signals (EEG)**, rather than relying on **past behavior or preferences**?
+
+- _Why important_: 💡 People's preferences **change constantly**:
+  - 🛍️ What you want to see/buy **now ≠ what you liked yesterday**
+  - ⚡ Real-time mental state capture → **instant, more personal recommendations**
+  
+  Applications:
+  - 🛒 Shopping
+  - 📺 Media
+  - 🎮 Gaming
+  - 🏥 Healthcare
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **QUARK** links **how humans think** with **how computers recommend**:
+  - 🧠 **EEG signals reveal meaningful patterns** about current interests
+  - ⚛️ **Quantum cognition theory**: Model mixed thoughts
+  - 🔗 **Graph neural networks**: Capture relationships between thoughts
+  
+  → System recommends items **more accurately** than existing models
+
+**Key insight**:
+
+| Component | Function |
+|-----------|----------|
+| **Quantum modeling** | Breaks down "thought mixtures" into clearer parts ⚛️ |
+| **Graph learning** | Connects related ideas in the brain 🔗 |
+| **EEG patterns** | Reveal real-time interests 🧠 |
+
+- _Why necessary_: 🏥 EEG signals are **messy and contain overlapping traces** of different thoughts:
+
+| Challenge | Problem | Solution Needed |
+|-----------|---------|-----------------|
+| **Thought mixtures** | Standard ML can't separate | **Quantum approach** ⚛️ |
+| **Temporal dependencies** | How past thoughts influence new ones | **Graph learning** 🔗 |
+| **Real-time adaptation** | Can't capture current mental state | **EEG-based modeling** 🧠 |
+
+Quantum-based approach + graph learning = break down thought mixtures & connect related ideas ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Simulate **how people's thoughts evolve**:
+  - 📜 **Past ideas** affect **current decisions**
+  - ⏩ **Current ideas** influence **future ones**
+  
+  **Pipeline**:
+  1. Divide EEG into **small time segments** (thought events)
+  2. Apply **quantum theory** to extract different mental components
+  3. Use **graph neural networks** to connect and interpret thoughts
+  4. **Predict what the user wants**
+
+- _Method_: 🔧
+
+**Model: QUARK (Quantum Cognition-Inspired EEG-based Recommendation)**
+
+**Four main components**:
+
+| Component | Function |
+|-----------|----------|
+| **1. Sliding Window Segmentation** | Split EEG into short "thought snapshots" |
+| **2. Quantum Space Modeling** | Understand how mixed thoughts form and interfere ⚛️ |
+| **3. Graph Neural Networks (GCN)** | Two networks: <br>• **Continuity graph**: Thought flow over time<br>• **Interference graph**: Past → Future influence |
+| **4. Recommendation Generation** | Combine graphs → EEG user representation → Match to items |
+
+
+**Dataset**: MindBigData EEG dataset (participants viewing images with brain signals recorded)
+
+- _Result_: 📈
+
+**Performance vs. Baselines**:
+
+| Model | Type | Performance |
+|-------|------|-------------|
+| **DeepFM** | Traditional | Baseline |
+| **NCF** | Traditional | Baseline |
+| **BPR** | Traditional | Baseline |
+| **QUARK** | EEG + Quantum + Graph | **Up to 95% improvement** 🏆 |
+
+**Detailed findings**:
+
+| Metric | Improvement |
 |--------|-------------|
-| **Clinical BCI** | Assistive devices for paralyzed patients |
-| **Rehabilitation** | Motor imagery-based therapy |
-| **Neuroscience** | Understanding motor cortex organization |
-| **Gaming/VR** | Thought-controlled interfaces |
-| **Research** | Cross-subject MI pattern analysis |
+| **Precision** | Up to **95% higher** 🏆 |
+| **Recall** | Up to **95% higher** 🏆 |
+| **Thought clustering** | ✅ Clear categories |
+| **Emotion detection** | ✅ Successful |
+| **Style matching** | ✅ Accurate |
+
+
+- _Conclusion_: 🎓 **"Recommend what you think"** using EEG is possible:
+  - ⚛️ **Quantum-inspired modeling**: Separates mixed thoughts
+  - 🔗 **Graph learning**: Captures thought continuity and interference
+  - 🧠 **Raw brain signals → meaningful recommendations**
+  - 🏆 **Up to 95% improvement** over traditional systems
+  - ⚡ **Real-time mental state** understanding
+  - 🚀 **Opens door to**:
+    - 🤖 Adaptive recommendation systems
+    - 😊 Emotion-aware personalization
+    - 🧠 Brain-driven interfaces
+    - 🛍️ Instant preference capture
+  
+  Applications:
+  - 🛒 Shopping (instant preference detection)
+  - 📺 Media streaming (mood-based content)
+  - 🎮 Gaming (adaptive difficulty/content)
+  - 🏥 Healthcare (mental state monitoring)
+  
+  Quantum cognition + graph neural networks = new generation of brain-driven personalization. 🧠⚛️🔗
+</details>
+</details>
 
 ---
 
-## Conclusion
+> [*GEFM: Graph-Enhanced EEG Foundation Model*], [Feb 22, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
 
-**DRDCAE-STGNN** advances Motor Imagery BCI through:
+- _Topic_: 🧠 EEG foundation model combining spatial (graph) and temporal learning for general-purpose brain signal analysis
+- _Core Author_: Limin Wang, Toyotaro Suzumura, Hiroki Kanezashi
+- _Core Group_: The University of Tokyo
+</details>
 
-- 🧠 **Dynamic brain connectivity modeling** via mutual information
-- 🎯 **Discriminative feature learning** with dual-objective autoencoder
-- 🔗 **Spatio-temporal integration** via hierarchical graph networks
-- 📈 **State-of-the-art performance** on multiple MI datasets
-- 🔍 **High interpretability** with functional connectivity insights
-- 🚀 **Robust generalization** across subjects and tasks
+<details>
+<summary><strong>Problems</strong></summary>
 
-The framework bridges **neuroscience-inspired modeling** with **deep learning**, providing both superior performance and mechanistic understanding of motor imagery brain patterns.
+- _Main problem_: 🎯 Most existing EEG foundation models only focus on **time sequence** of brain signals (how they change over time) but **ignore how different brain regions interact** with each other → Limited understanding of brain network activity and poorer performance across tasks.
+
+- _Focus problem_: 🔍 How to build a foundation model that learns **both timing and relationships** between EEG channels (how different parts of the brain communicate)?
+
+- _Why important_: 💡 EEG data contain valuable information in:
+  - ⏱️ **When** signals occur (temporal)
+  - 🔗 **How** brain regions connect and interact (spatial)
+  
+  These interactions are critical for diagnosing brain disorders and understanding cognition. **Ignoring them wastes** a large part of useful EEG information.
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 By adding **graph learning** (models connections between EEG channels) to **masked autoencoder framework**, **GEFM (Graph-Enhanced EEG Foundation Model)** captures both temporal flow and spatial relationships → Performs **better on all tested tasks** than previous models like BENDR.
+
+- _Why necessary_: 🏥 **Labeling EEG data is expensive and time-consuming** → Models that learn from **large amounts of unlabeled data** are essential. Foundation models solve this, but previous ones **ignored inter-channel connections**. GEFM fills this gap using **graph neural networks (GNNs)** to represent and learn these relationships.
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Represent the **brain as a network**:
+  - **Nodes**: EEG channels
+  - **Edges**: Weighted by electrode distances on scalp
+  
+  Feed network into **GNN** (learn spatial relationships) + **Transformer encoder** (learn temporal changes)
+
+- _Method_: 🔧 **GEFM** builds on BENDR:
+
+| Component | Description |
+|-----------|-------------|
+| **Two-layer GNN** | Learn how EEG channels interact (spatial) |
+| **Node features** | Each channel's signal |
+| **Edge weights** | Distances between electrodes |
+| **Sequence adjustment** | Padding or linear scaling for different EEG lengths |
+| **Transformer encoder** | Learn temporal dynamics (BENDR-based) |
+
+**GNN variants tested**: GCN, GAT, GraphSAGE
+
+**Pre-training**: Temple University Hospital EEG Corpus (10,000 subjects)
+
+**Downstream tasks**:
+- **MMI**: Imagined hand movement
+- **P300**: Visual attention
+- **ERN**: Error recognition
+
+- _Result_: 📈 **Best version** (GEFM with GCN + edge weights) outperformed all baselines:
+
+| Task | Improvement |
+|------|-------------|
+| **MMI** | **+31%** accuracy 🏆 |
+| **P300** | **+8%** AUROC 🏆 |
+| **ERN** | **+3%** accuracy 🏆 |
+
+**Technical findings**:
+- ✅ **Linear transformation** > simple padding for length adjustment
+- ✅ **BENDR configuration** > simple linear models (handles extra spatial info from graph)
+
+- _Conclusion_: 🎓 **GEFM is the first EEG foundation model** learning both spatial and temporal information effectively. By combining **graph neural networks + masked autoencoding**, it captures structure and timing of brain activity better than earlier models. Sets **new direction** for general-purpose EEG analysis → enabling accurate, flexible, low-cost applications in:
+  - 🏥 Clinical diagnosis
+  - 🤖 Brain-computer interfaces
+  - 🧠 Cognitive research
+</details>
+</details>
+
+---
+
+> [*Pre-Training Graph Contrastive Masked Autoencoders are Strong Distillers for EEG*], [Jul 8, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🧠 Self-supervised learning and knowledge distillation for transferring high-density (HD) to low-density (LD) EEG analysis
+- _Core Author_: XinxuWei, KanhaoZhao, YongJiao, HuaXie, LifangHe, YuZhang
+- _Core Group_: Lehigh University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 EEG data are often **difficult to label** and come from devices with **very different numbers of electrodes**:
+
+| EEG Type | Advantages | Disadvantages |
+|----------|-----------|---------------|
+| **High-density (HD)** | Detailed brain signals | 💰 Expensive, hard to use |
+| **Low-density (LD)** | 💰 Cheaper, practical | ❌ Loses useful information |
+
+Challenge: How to train models using **both unlabeled and labeled data** and **transfer knowledge** from HD to LD effectively?
+
+- _Focus problem_: 🔍 How to bridge the gap between HD and LD EEG by:
+  - Pre-training large graph models on **massive unlabeled EEG data**
+  - **Distilling knowledge** into smaller models for simpler EEG setups
+
+- _Why important_: 💡 In real applications (diagnosing depression, autism):
+  - 🏥 **Fewer electrodes** = more practical and affordable
+  - ❌ But they **perform poorly**
+  
+  If small, cheap models can **learn from large, high-quality ones** → EEG-based healthcare tools become **more accessible and reliable worldwide** ✅
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **EEG-DisGCMAE** combines:
+  - **Two kinds of pre-training**: Contrastive + Generative
+  - **On EEG graphs**: Learn brain-network features from unlabeled data
+  - **Knowledge distillation**: Teacher (HD EEG) → Student (LD EEG)
+  
+  Result: Smaller models become **nearly as good as large ones** 🏆
+
+**Framework components**:
+
+| Component | Function |
+|-----------|----------|
+| **Contrastive learning** | Compare augmented versions of same signal |
+| **Generative learning** | Reconstruct missing nodes (masked autoencoder) |
+| **Knowledge distillation** | HD teacher → LD student transfer |
+
+- _Why necessary_: 🏥 Existing EEG methods have **critical limitations**:
+
+| Limitation | Problem |
+|------------|---------|
+| **Rely on labeled data** | Scarce and expensive |
+| **Single density only** | Work with HD or LD, not both |
+| **No transfer learning** | Can't transfer HD → LD knowledge |
+| **Separate learning** | Can't combine contrastive + generative |
+
+New method necessary to make EEG analysis **both powerful and practical** ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Represent **EEG signals as a graph**:
+  - **Nodes**: Electrodes
+  - **Edges**: Correlations between channels
+  
+  **Two models trained together**:
+  - 👨‍🏫 **Teacher** (large, HD EEG)
+  - 👨‍🎓 **Student** (small, LD EEG)
+  
+  Student learns **structural and semantic information** from teacher via **Graph Topology Distillation (GTD)** loss
+
+- _Method_: 🔧
+
+**Model: EEG-DisGCMAE**
+
+**Four main steps**:
+
+| Step | Description |
+|------|-------------|
+| **1. Graph construction** | EEG channels → nodes; correlations → edges |
+| **2. Unified pre-training (GCMAE-PT)** | Contrastive + Generative: reconstruct masked signals while contrasting representations |
+| **3. Knowledge distillation** | Student (LD) mimics teacher (HD) using:<br>• Logit alignment<br>• **GTD loss** (learns spatial connections even with missing electrodes) |
+| **4. Fine-tuning** | Adapt to classification tasks (depression, autism) with limited labeled data |
+
+**Pipeline**:
+```
+Unlabeled EEG → Graph Construction → GCMAE-PT (Contrastive+Generative) → Distillation (HD→LD) → Fine-tuning
+```
+
+**Datasets**:
+- **EMBARC**: Clinical EEG for depression
+- **HBN**: EEG for autism
+- **Four classification tasks** total
+
+**Baselines**:
+- EEGNet
+- GraphCL
+- GraphMAE
+- GPT-GNN
+
+- _Result_: 📈
+
+**Performance**:
+
+| Finding | Result |
+|---------|--------|
+| **vs. Baselines** | **Outperformed all** (EEGNet, GraphCL, GraphMAE, GPT-GNN) 🏆 |
+| **LD Student performance** | **Close to or better than HD models** 🏆 |
+| **Robustness** | Under noise/missing electrodes: **much less accuracy loss** ✅ |
+| **Datasets** | EMBARC + HBN (4 tasks) |
+
+**Key advantages**:
+
+| Feature | Traditional Methods | EEG-DisGCMAE |
+|---------|-------------------|--------------|
+| **HD → LD transfer** | ❌ Not possible | ✅ **Effective** |
+| **Pre-training** | Single type | ✅ **Contrastive + Generative** |
+| **Data requirement** | Large labeled datasets | ✅ **Unlabeled data** |
+| **LD model performance** | Poor | ✅ **Near HD-level** |
+| **Robustness** | Low | ✅ **High** (noise/missing) |
+| **Cost** | Expensive HD required | ✅ **Affordable LD works** |
+
+**Technical innovations**:
+
+| Innovation | Benefit |
+|------------|---------|
+| **GCMAE-PT** | Unified contrastive + generative learning |
+| **GTD loss** | Learns spatial connections despite missing electrodes |
+| **Teacher-Student** | HD knowledge → LD model |
+
+- _Conclusion_: 🎓 **Combining contrastive and generative graph pre-training** with **topology-aware distillation** provides powerful EEG training:
+  - 🏆 **Outperforms all baselines** on clinical datasets (EMBARC, HBN)
+  - 💰 **Small, affordable LD systems** reach **accuracy of expensive HD ones**
+  - 🔍 **Learns from unlabeled data** (addresses labeling scarcity)
+  - 💪 **Robust** to noise and missing electrodes
+  - 🌍 Makes **advanced brain-signal analysis practical** for everyday clinical and research use
+  
+  Applications:
+  - 🏥 Clinical diagnosis (depression, autism) with affordable devices
+  - 🌍 Accessible healthcare in low-resource settings
+  - 🧠 Research with practical EEG setups
+  - 💰 Cost-effective brain monitoring
+  
+  Graph self-supervised learning + knowledge distillation = bridging HD-LD gap in EEG analysis. 🧠💡
+</details>
+</details>
+
+---
+
+> [*Graph Adapter for Parameter-Efficient Fine-Tuning of EEG Foundation Models*], [Feb 18, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: ⚡ Parameter-efficient fine-tuning of EEG foundation models using lightweight graph adapters for spatial learning
+- _Core Author_: Toyotaro Suzumura, Hiroki Kanezashi, Shotaro Akahori
+- _Core Group_: The University of Tokyo
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Fine-tuning large EEG foundation models (Transformer-based) for specific medical tasks is **very expensive** in:
+  - 💻 **Computing**
+  - 📊 **Data requirements**
+  
+  These models learn **temporal features well** but **ignore spatial information** (how different EEG sensors relate). Fully retraining for every task is **unrealistic** with limited, costly-to-label medical EEG data.
+
+- _Focus problem_: 🔍 How to **efficiently adapt** a pre-trained EEG model (BENDR) to new healthcare tasks **without retraining the whole model**? Proposes adding **lightweight graph adapter** to learn spatial relationships while **keeping original model frozen**.
+
+- _Why important_: 💡 In brain disorder prediction (depression, epilepsy):
+  - 🧠 **How brain regions interact** = as important as signal timing
+  - 📊 Collecting labeled EEG data is **difficult**
+  - Need to **reuse existing large models** without wasting computation or overfitting small datasets
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **EEG-GraphAdapter (EGA)** successfully adds **spatial understanding** to pre-trained time-series models:
+  - 🔗 Uses simple **Graph Neural Network (GNN)** as adapter
+  - 🧠 Captures how brain sensors connect
+  - 📈 Improves prediction accuracy
+  - ⚡ Reduces trainable parameters by **~80%**
+
+**Performance gains**:
+
+| Task | Improvement |
+|------|-------------|
+| **MDD classification** | **+12.8%** F1-score 🏆 |
+| **TUAB abnormality detection** | **+16.1%** improvement 🏆 |
+| **Parameter reduction** | 6.46M → ~1M (**~80% reduction**) ⚡ |
+
+- _Why necessary_: 🏥 Traditional EEG foundation models (BENDR, MAEEG) have **critical limitations**:
+
+| Limitation | Problem |
+|------------|---------|
+| **Only model time** | "See" each EEG channel separately |
+| **Ignore spatial relationships** | Miss how brain areas connect |
+| **Neurological disorders** | Often linked to **abnormal connections** (e.g., frontal-parietal) |
+| **Full retraining** | Expensive, impractical for each task |
+
+Model must learn **graph structure of brain** → adapter provides this ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Keep **large pre-trained BENDR frozen**, plug in **small GNN-based module** (GraphAdapter):
+  - **Nodes**: EEG channels
+  - **Edges**: Weighted by electrode distances on scalp
+  - **Adapter**: Processes signals to include info from nearby sensors
+  
+  System learns:
+  - ⏱️ **Temporal patterns** (from BENDR)
+  - 🔗 **Spatial relationships** (from adapter)
+  
+  **Without retraining** entire network ✅
+
+- _Method_: 🔧
+
+**Model: EEG-GraphAdapter (EGA)**
+
+**Pipeline**:
+
+| Step | Description |
+|------|-------------|
+| **1. Pre-training** | BENDR trained on massive EEG dataset (69,000+ samples, Temple University Hospital) |
+| **2. Adapter module** | Insert **two-layer GNN** (GCN/GraphSAGE/GAT) before BENDR |
+| **3. Freeze backbone** | BENDR parameters remain **fixed** ❄️ |
+| **4. Train adapter** | Only adapter + final classifier trained |
+| **5. Downstream tasks** | Evaluate on clinical datasets |
+
+**GNN variants tested**:
+- **GCN** (Graph Convolutional Network)
+- **GraphSAGE**
+- **GAT** (Graph Attention Network)
+
+**Downstream tasks**:
+
+| Dataset | Task |
+|---------|------|
+| **MDD** | Major Depressive Disorder detection |
+| **TUAB** | EEG abnormality detection |
+
+**Metrics**: F1-score, AUROC
+
+- _Result_: 📈
+
+**Performance improvements**:
+
+| Task | Best Adapter | Improvement | Baseline (BENDR) |
+|------|-------------|-------------|------------------|
+| **MDD** | EGA-GAT | **+12.8%** F1-score 🏆 | Baseline |
+| **TUAB** | EGA-GraphSAGE | **+16.1%** 🏆 | Baseline |
+
+**Efficiency gains**:
+
+| Metric | Full Model | EGA |
+|--------|-----------|-----|
+| **Trainable parameters** | 6.46M | **~1M** ⚡ |
+| **Reduction** | 100% | **~80% reduction** |
+| **Computation** | High | **Up to 75% cut** |
+| **Training speed** | Slower | **Faster** ✅ |
+| **Accuracy** | Lower | **Higher** 🏆 |
+
+**Key advantages**:
+
+| Feature | Traditional Fine-tuning | EGA |
+|---------|------------------------|-----|
+| **Parameters trained** | All (millions) | **Adapter only (~1M)** ⚡ |
+| **Spatial learning** | ❌ None | ✅ **GNN captures** |
+| **Temporal learning** | ✅ Yes | ✅ **Preserved (BENDR)** |
+| **Data requirement** | Large | **Small datasets work** ✅ |
+| **Computation** | Expensive | **75% reduction** ⚡ |
+| **Overfitting risk** | High | **Low** ✅ |
+
+- _Conclusion_: 🎓 **EEG-GraphAdapter (EGA) is a parameter-efficient fine-tuning method** allowing existing EEG foundation models to learn **spatial brain relationships** without retraining:
+  - 🏆 **+12.8% (MDD)**, **+16.1% (TUAB)** improvements
+  - ⚡ **~80% parameter reduction** (6.46M → ~1M)
+  - 💻 **Up to 75% computation cut**
+  - 📊 **High accuracy with far less data and compute**
+  - 🏥 **Ideal for healthcare** where labeled EEG data are scarce
+  - 🔗 **Bridges gap** between time-based and space-aware EEG modeling
+  - 🚀 **Paves way for scalable, clinically useful** EEG analysis tools
+  
+  Applications:
+  - 🧠 Depression detection
+  - ⚡ Epilepsy diagnosis
+  - 🎯 ADHD assessment
+  - 🏥 General brain disorder screening
+  
+  Lightweight graph adapter = adding spatial awareness to temporal models without expensive retraining. 🧠🔗⚡
+</details>
+</details>
+
+---
+
+> [*BrainGPT: A Generalist Foundation Model for EEG Signal Analysis*], [Date]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🤖 First GPT-like generalist foundation model for EEG across multiple datasets, devices, and tasks
+- _Core Author_: [Author names from paper]
+- _Core Group_: [Research institution/group]
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Most existing EEG models are **task-specific** — each trained for **only one dataset or one task** (emotion recognition, sleep staging). They **can't generalize** across:
+  - 📟 Devices
+  - 🔌 Electrode layouts
+  - 📊 Data formats
+  
+  Every new EEG application requires **retraining from scratch** → wastes time, data, and compute.
+
+- _Focus problem_: 🔍 How to build a **generalist EEG foundation model** that handles **multiple datasets, devices, and tasks** within a single framework — **like GPT does for language**?
+
+- _Why important_: 💡 EEG signals widely used in healthcare, neuroscience, BCIs, but:
+  - Each dataset differs in: sampling rate, electrode number, preprocessing
+  - Hard to **combine data or transfer knowledge**
+  
+  **Universal model** understanding EEG from different sources → much easier to apply AI to brain science and medical diagnostics ✅
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **BrainGPT** = first GPT-like foundation model for EEG with **three key innovations**:
+
+| Innovation | Function |
+|------------|----------|
+| **1. Electrode-wise modeling** | Treats each electrode as individual data stream → training across datasets with different layouts (up to **138 channels unified**) |
+| **2. Autoregressive pre-training** | Predicts **next time point** (not masked reconstruction) → better matches brain's temporal dynamics |
+| **3. Task-shared graph network** | Learns how electrodes (brain regions) interact → enables multitask learning |
+
+**Performance** (Average improvements vs. state-of-the-art):
+
+| Task | Improvement |
+|------|-------------|
+| **Emotion recognition** | **+5.07%** |
+| **Motor imagery** | **+6.05%** |
+| **Cognitive workload** | **+8.50%** |
+| **Sleep staging** | **+11.20%** 🏆 |
+| **Cross-modal BCI** | **+5.10%** |
+
+- _Why necessary_: 🏥 Traditional self-supervised EEG models have **critical limitations**:
+
+| Method | Limitation |
+|--------|-----------|
+| **Masked reconstruction** | Only captures partial features |
+| **Contrastive learning** | Fails to learn long-term dependencies |
+| **Both** | Don't align with how brain activity unfolds |
+
+BrainGPT's **autoregressive method** aligns with temporal dynamics: **"the past influences the future"** ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 **BrainGPT treats EEG like language**:
+
+| EEG Component | Language Analogy |
+|---------------|------------------|
+| **Electrode** | "Sentence" |
+| **Time step** | "Word" |
+| **Task** | Predict next "word" (signal value) |
+
+**Architecture**:
+- **Transformer with causal attention** (like GPT)
+- **Graph neural layer** → electrodes communicate, learn spatial connections
+
+- _Method_: 🔧
+
+**Two-stage pipeline**:
+
+### **(1) Pre-training**
+
+| Component | Description |
+|-----------|-------------|
+| **Data** | **37.5M electrode samples** (≈1B time points) |
+| **Task** | Autoregressive prediction (next time point) |
+| **Architecture** | **Electrode Temporal Encoder (ETE)** — Transformer with causal attention |
+| **Key finding** | Establishes **scaling laws for EEG**: Bigger model + more data → better performance 📈 |
+
+### **(2) Multi-task fine-tuning**
+
+| Component | Description |
+|-----------|-------------|
+| **Datasets** | **12 public EEG datasets** |
+| **Tasks** | Emotion recognition, motor imagery, workload, sleep staging, cross-modal BCI |
+| **Graph module** | **Task-Shared Electrode Graph (TEG)** models electrode relationships |
+| **Efficiency** | **All tasks share same backbone** — no separate fine-tuning needed ✅ |
+
+
+- _Result_: 📈
+
+**Performance** (12 benchmarks, 5 task categories):
+
+| Task | Improvement | Note |
+|------|-------------|------|
+| **Emotion recognition** | **+5.07%** | vs. SOTA |
+| **Motor imagery** | **+6.05%** | vs. SOTA |
+| **Cognitive workload** | **+8.50%** | vs. SOTA |
+| **Sleep staging** | **+11.20%** 🏆 | vs. SOTA (highest) |
+| **Cross-modal BCI** | **+5.10%** | vs. SOTA |
+
+
+**Key advantages**:
+
+| Feature | Task-Specific Models | BrainGPT |
+|---------|---------------------|----------|
+| **Generalization** | ❌ One task only | ✅ **Multiple tasks** |
+| **Cross-device** | ❌ Fixed layout | ✅ **Up to 138 channels** |
+| **Pre-training** | Limited/None | ✅ **37.5M samples** |
+| **Temporal modeling** | Masked/Contrastive | ✅ **Autoregressive** |
+| **Spatial modeling** | Fixed/None | ✅ **Task-shared graph** |
+| **Transfer learning** | ❌ Requires retraining | ✅ **Strong zero-shot** |
+
+- _Conclusion_: 🎓 **BrainGPT is the first true generalist EEG foundation model** by combining:
+  - 🔌 **Electrode-wise representation**: Cross-device compatibility (up to 138 channels)
+  - ⏱️ **Autoregressive pre-training**: Temporal prediction aligned with brain dynamics
+  - 🔗 **Graph-based task sharing**: Spatial reasoning across electrodes
+  - 🏆 **Unifies multiple EEG tasks** within one scalable model
+  
+  **Key achievements**:
+  - 📈 **Establishes EEG scaling laws**: Bigger model + more data = better performance
+  - 🎯 **Outperforms SOTA** on 12 benchmarks (+5-11% improvements)
+  - 🌐 **Strong zero-shot transfer** to unseen datasets
+  - ⚡ **Multi-task efficiency**: Shared backbone, no separate fine-tuning
+  
+  Applications:
+  - 🏥 Clinical diagnosis (cross-device compatibility)
+  - 🧠 Neuroscience research (unified analysis)
+  - 🤖 Brain-computer interfaces (multi-task)
+  - 😴 Sleep monitoring
+  - 😊 Emotion recognition
+  
+  BrainGPT = GPT for brain signals, enabling universal EEG understanding across tasks and devices. 🧠🤖
+</details>
+</details>
+
+---

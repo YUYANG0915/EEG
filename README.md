@@ -1739,15 +1739,15 @@ Model must learn **graph structure of brain** → adapter provides this ✅
 
 ---
 
-> [*BrainGPT: A Generalist Foundation Model for EEG Signal Analysis*], [Date]:
+> [*BrainGPT- Unleashing the Potential of EEG Generalist Foundation Model by Autoregressive Pre-training*], [Aug 29, 2025]:
 <details>
 <summary><strong>V0:</strong></summary>
 <details>
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: 🤖 First GPT-like generalist foundation model for EEG across multiple datasets, devices, and tasks
-- _Core Author_: [Author names from paper]
-- _Core Group_: [Research institution/group]
+- _Core Author_: Tongtian Yue, Xuange Gao, Shuning Xue, Yepeng Tang, Longteng Guo, Jie Jiang, Jing Liu
+- _Core Group_: Chi- nese Academy of Sciences, University of Chinese Academy of Sciences
 </details>
 
 <details>

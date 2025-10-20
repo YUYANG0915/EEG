@@ -2171,7 +2171,6 @@ EEG → SGConv (temporal) → Contrastive Pre-training → MH-GSL (spatial) → 
 
 ---
 
----
 > [*REST- Efficient and Accelerated EEG Seizure Analysis through Residual State Updates*], [Jun 3, 2024] （ICML 2024）:
 <details>
 <summary><strong>V0:</strong></summary>

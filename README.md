@@ -82,7 +82,7 @@
 
 ---
 
-> [*Lightweight Transformer For EEG Classification Via Balanced Signed Graphed Algorithmic Unrolling*], [Date]:
+> [*Lightweight Transformer For EEG Classification Via Balanced Signed Graphed Algorithmic Unrolling*], [Oct 17, 2025]:
 <details>
 <summary><strong>V0:</strong></summary>
 <details>
@@ -2450,6 +2450,143 @@ System sees **both signal and meaning** behind it ✅
   - 🧠 Understanding seizure mechanisms
   
   Multi-view dynamic graph learning = capturing temporal dynamics + spatial interactions + semantic meaning for superior seizure analysis. 🧠⏱️🔗
+</details>
+</details>
+
+---
+
+> [*EEG Decoding for Datasets with Heterogenous Electrode Configurations using Transfer Learning Graph Neural Networks*], [Jun 20, 2023]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🔗 Graph neural networks with transfer learning for combining heterogeneous EEG datasets with different electrode configurations
+- _Core Author_: Jinpei Han, Xiaoxi Wei, A. Aldo Faisal
+- _Core Group_: Imperial College London
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 EEG data from different labs use **different electrode numbers and layouts** → very hard to combine datasets. Deep learning needs **lots of data**, but EEG data is:
+  - 📊 **Small**
+  - 🔀 **Inconsistent**
+  - 👥 **Varies across subjects and devices**
+
+- _Focus problem_: 🔍 How to **combine EEG datasets** with different electrode configurations and still **accurately classify motor imagery** (imagining body movements)?
+
+- _Why important_: 💡 If we can **merge EEG data** from many different setups:
+  - 💪 **Train stronger, more general models** for BCIs
+  - 💰 **Reduce data collection costs**
+  - 🏥 **More reliable systems** for medical and assistive technologies
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **GNNs + transfer learning** can align data from different electrode layouts and subjects:
+  - 🔗 Transfer knowledge across datasets
+  - 📈 **Higher accuracy and stability** than CNN-based approaches
+
+**Performance**:
+
+| Dataset | Channels | Accuracy |
+|---------|----------|----------|
+| **BCIC IV 2a** | 22 | **72.5%** 🏆 |
+| **PhysioNet MI** | 64 | **74.4%** 🏆 |
+| **OpenBMI** | 62 | **72.6%** 🏆 |
+
+- _Why necessary_: 🏥 Existing methods **fail** because:
+
+| Problem | Issue |
+|---------|-------|
+| **CNN/RNN** | Treat EEG as flat grid, ignore electrode positions |
+| **Common electrodes only** | Wastes information |
+| **Device differences** | Signals differ across devices |
+
+Need model capturing **both spatial relationships AND cross-dataset differences** ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Represent **EEG sensors as graph nodes**:
+  - **Edges**: Show how brain regions connect
+  - **Each dataset**: Own GNN encoder (learns unique electrode structure)
+  - **Shared alignment**: Distance-based loss (**Maximum Density Divergence, MDD**) makes feature spaces overlap
+  
+  → Model learns **general patterns**, not dataset-specific ones ✅
+
+- _Method_: 🔧
+
+**Five-step pipeline**:
+
+| Step | Description |
+|------|-------------|
+| **1. Temporal feature extraction** | CNN blocks process EEG time-series signals |
+| **2. Spatial graph learning** | Convert electrodes to graph:<br>• **Neighbourhood method** (electrode geometry)<br>• **Correlation method** (signal similarity) |
+| **3. Graph pooling** | **SAGPooling**: Keep most important brain nodes |
+| **4. Latent alignment** | MLP block + **MDD loss** align features across datasets |
+| **5. Classification** | Predict left vs. right-hand motor imagery |
+
+
+**Datasets tested**:
+
+| Dataset | Channels | Configuration |
+|---------|----------|---------------|
+| **BCIC IV 2a** | 22 | Different layout |
+| **PhysioNet MI** | 64 | Different layout |
+| **OpenBMI** | 62 | Different layout |
+
+- _Result_: 📈
+
+**Performance comparison**:
+
+| Dataset | GNN + Transfer | Traditional CNN |
+|---------|---------------|-----------------|
+| **BCIC IV 2a** | **72.5%** 🏆 | Lower |
+| **PhysioNet MI** | **74.4%** 🏆 | Lower |
+| **OpenBMI** | **72.6%** 🏆 | Lower |
+
+**Key advantages**:
+
+| Metric | Result |
+|--------|--------|
+| **Accuracy** | Best across all datasets 🏆 |
+| **Stability** | Lower standard deviation ✅ |
+| **Generalization** | Better on unseen subjects ✅ |
+
+**Visualization findings**:
+- ✅ After alignment: Features **grouped by task type** (left vs. right hand)
+- ❌ Not by dataset or subject
+- → Model learned **shared brain patterns** ✅
+
+**Feature alignment**:
+
+| Before Alignment | After Alignment |
+|------------------|-----------------|
+| Grouped by dataset/subject ❌ | Grouped by task (left/right) ✅ |
+| Poor generalization | Strong generalization ✅ |
+
+- _Conclusion_: 🎓 **Combining GNNs with transfer learning** allows learning from **heterogeneous EEG datasets** without losing spatial or functional information:
+  - 🔗 **Graph representation**: Captures electrode spatial relationships
+  - 🔄 **Transfer learning**: Aligns different datasets (MDD loss)
+  - 📈 **72-74% accuracy** across datasets with different configurations
+  - 📊 **More stable** (lower variance)
+  - 🌐 **Better generalization** to unseen subjects
+  - 🧠 Learns **shared brain patterns** (not dataset-specific)
+  
+  **Key innovation**: MDD loss makes features from different datasets **overlap in latent space** → unified representation ✅
+  
+  Applications:
+  - 🤖 Robust brain-computer interfaces
+  - 🏥 Cross-lab medical research
+  - 💰 Reduced data collection costs
+  - 🔬 Larger-scale brain studies
+  - 📊 May extend to other signals (fNIRS, EMG)
+  
+  GNN + transfer learning = unifying fragmented biomedical EEG data for stronger, more general models. 🧠🔗
 </details>
 </details>
 

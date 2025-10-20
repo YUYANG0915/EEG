@@ -1222,8 +1222,8 @@ EEG Network → Compress to Latent Space → [Subject Part | Residual Part] → 
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: 🧠 Brain-signal-driven recommendation system using quantum cognition theory and graph neural networks
-- _Core Author_: Jinkun Han, Wei Li, Yingshu Li, Zhipeng Cai
-- _Core Group_: Georgia State University
+- _Author_: Jinkun Han, Wei Li, Yingshu Li, Zhipeng Cai
+- _Group_: Georgia State University
 </details>
 
 <details>
@@ -1441,8 +1441,8 @@ Quantum-based approach + graph learning = break down thought mixtures & connect 
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: 🧠 Self-supervised learning and knowledge distillation for transferring high-density (HD) to low-density (LD) EEG analysis
-- _Core Author_: XinxuWei, KanhaoZhao, YongJiao, HuaXie, LifangHe, YuZhang
-- _Core Group_: Lehigh University
+- _Author_: XinxuWei, KanhaoZhao, YongJiao, HuaXie, LifangHe, YuZhang
+- _Group_: Lehigh University
 </details>
 
 <details>
@@ -1596,8 +1596,8 @@ Unlabeled EEG → Graph Construction → GCMAE-PT (Contrastive+Generative) → D
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: ⚡ Parameter-efficient fine-tuning of EEG foundation models using lightweight graph adapters for spatial learning
-- _Core Author_: Toyotaro Suzumura, Hiroki Kanezashi, Shotaro Akahori
-- _Core Group_: The University of Tokyo
+- _Author_: Toyotaro Suzumura, Hiroki Kanezashi, Shotaro Akahori
+- _Group_: The University of Tokyo
 </details>
 
 <details>
@@ -1746,8 +1746,8 @@ Model must learn **graph structure of brain** → adapter provides this ✅
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: 🤖 First GPT-like generalist foundation model for EEG across multiple datasets, devices, and tasks
-- _Core Author_: Tongtian Yue, Xuange Gao, Shuning Xue, Yepeng Tang, Longteng Guo, Jie Jiang, Jing Liu
-- _Core Group_: Chi- nese Academy of Sciences, University of Chinese Academy of Sciences
+- _Author_: Tongtian Yue, Xuange Gao, Shuning Xue, Yepeng Tang, Longteng Guo, Jie Jiang, Jing Liu
+- _Group_: Chi- nese Academy of Sciences, University of Chinese Academy of Sciences
 </details>
 
 <details>
@@ -1883,6 +1883,574 @@ BrainGPT's **autoregressive method** aligns with temporal dynamics: **"the past 
   - 😊 Emotion recognition
   
   BrainGPT = GPT for brain signals, enabling universal EEG understanding across tasks and devices. 🧠🤖
+</details>
+</details>
+
+---
+
+> [*Towards Explainable Graph Neural Networks for Neurological Evaluation on EEG Signals*], [Sep 24, 2025]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🏥 Explainable Graph Neural Networks for predicting stroke severity from EEG and visualizing brain network reorganization
+- _Author_: Andrea Protani, Lorenzo Giusti, Chiara Iacovelli, Albert Sund Aillet, Diogo Reis Santos, Giuseppe Reale, Aurelia Zauli, Marco Moci, Marta Garbuglia, Pierpaolo Brutti, Pietro Caliandro, Luigi Serio
+- _Group_: CERN, Sapienza University of Rome, Fondazione Policlinico Universitario Agostino Gemelli IRCCS
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 After a stroke, doctors need to **quickly and accurately assess severity** to choose best treatment. But traditional methods:
+  - 📊 Rely on **hand-crafted EEG features**
+  - 📝 Manual clinical scoring (NIH Stroke Scale)
+  - ❌ May **miss complex ways** the brain reorganizes itself after stroke
+
+- _Focus problem_: 🔍 How to create a model that **automatically predicts stroke severity** from EEG recordings and **shows which brain regions and connections matter most** for that prediction? Solution: **Graph Neural Networks (GNNs)** treating brain as network of connected regions.
+
+- _Why important_: 💡 After stroke, brain **changes its functional connections**. Understanding these changes helps doctors:
+  - 📈 **Monitor brain recovery**
+  - 🔮 **Predict long-term outcomes**
+  - 🏥 **Personalize rehabilitation treatments**
+  
+  Model that **both predicts and explains** could become valuable **decision-support tool** in hospitals ✅
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **GNNs can predict stroke severity (NIHSS score)** directly from EEG with **high accuracy**, while **identifying which connections** between brain regions are most affected:
+  - 🔍 Analyzing **attention weights** in GNN reveals **interpretable patterns**
+  - 🧠 Highlights which brain areas (Brodmann regions) show **strongest reorganization**
+  - ✅ **Not only predicts how bad** the stroke is but also **explains where** damage affects brain network
+
+**Key results**:
+
+| Metric | Performance |
+|--------|-------------|
+| **MAE** | **3.57 ± 0.6** between predicted and real NIHSS scores |
+| **Best performance** | Moderate stroke severity (NIHSS 9–15) |
+| **Model size** | Lightweight (~60k parameters) |
+
+- _Why necessary_: 🏥 Traditional approaches have **critical limitations**:
+
+| Challenge | Problem |
+|-----------|---------|
+| **EEG signals** | Messy and complex |
+| **Hand-designed features** | Lose brain's **network information** |
+| **Classic EEG models** | Can't capture **relationships between regions** |
+
+By modeling EEG as graph: each region = node, functional connections = edges → learn how stroke **disrupts brain's structure** ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Model treats **brain as multi-layer graph**:
+
+| Component | Description |
+|-----------|-------------|
+| **Layers** | Each = frequency band (α1, α2, β1) |
+| **Nodes** | Brodmann areas (defined brain regions) |
+| **Edges** | Strong signal correlations (Lagged Linear Coherence, LLC) |
+
+Use **Graph Attention Networks (GATs)** to learn which connections are most important for predicting stroke severity.
+
+**Graph optimization**: "Rewire" graphs — keep only **top 5% strongest/nearest connections**, remove noisy/irrelevant links.
+
+- _Method_: 🔧
+
+**Data**: EEGs from **71 stroke patients**, each scored with **NIHSS (2–22)**
+
+**Processing pipeline**:
+
+| Step | Description |
+|------|-------------|
+| **1. EEG cleaning** | ICA artifact removal |
+| **2. Source localization** | eLORETA |
+| **3. Frequency bands** | Extract 5 bands (δ, θ, α1, α2, β1) |
+
+**Graph construction**:
+
+| Component | Details |
+|-----------|---------|
+| **Layers** | α1, α2, β1 (3 frequency bands used for final model) |
+| **Nodes** | 84 Brodmann areas × 3 layers = **252 total nodes** per patient |
+| **Edge weights** | Functional (LLC) + Structural (distance) links |
+
+**Model**:
+- **Architecture**: Lightweight **2-layer GATv2** (~60k parameters)
+- **Training**: 5-fold cross-validation
+- **Task**: Predict NIHSS score
+
+
+- _Result_: 📈
+
+**Prediction accuracy**:
+
+| Metric | Result |
+|--------|--------|
+| **MAE** | **3.57 ± 0.6** 🏆 |
+| **Best performance** | Moderate severity (NIHSS 9–15) |
+| **Comparable to** | Human-level clinical scoring variability |
+
+**Interpretability findings**:
+
+| Finding | Details |
+|---------|---------|
+| **Attention maps** | Show brain regions on **affected side receive higher weights** |
+| **Left-hemisphere strokes** | Key activity on **left** ✅ |
+| **Right-hemisphere strokes** | Key activity on **right** ✅ |
+| **Brain reorganization** | Reduced α and β activity in damaged areas (consistent with neuroscience) |
+
+
+- _Conclusion_: 🎓 **Explainable Graph Neural Networks** serve as powerful, interpretable tool for neurological evaluation:
+  - 🏆 **Accurately predicts** stroke severity from resting-state EEG (MAE 3.57)
+  - 🔍 **Visualizes brain connectivity changes** after stroke
+  - 🧠 **Identifies affected regions** via attention weights (left vs. right hemisphere)
+  - 📊 **Reflects brain reorganization** (reduced α/β activity in damaged areas)
+  - ⚡ **Lightweight and fast** (~60k parameters)
+  
+  **Opens new possibilities**:
+  - ⏱️ **Real-time monitoring** of stroke patients through EEG
+  - 🏥 **Personalized rehabilitation** based on brain network changes
+  - 🤖 **Integration with clinical systems** for automated assessment
+  - 💰 **Low-cost alternative** to expensive imaging (MRI, PET)
+  
+  Explainable GNNs = predicting severity AND understanding brain network disruption in stroke patients. 🧠🏥
+</details>
+</details>
+
+---
+
+> [*Parkinson’s Disease Detection from Resting State EEG using Multi-Head Graph Structure Learning with Gradient Weighted Graph Attention Explanations*], [Aug 1, 2024]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🧠 Explainable graph-based deep learning for Parkinson's disease detection from resting-state EEG
+- _Author_: Christopher Neves, Yong Zeng, and Yiming Xiao
+- _Group_: Concordia University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Parkinson's disease (PD) is a major neurodegenerative disorder severely affecting motor and cognitive function:
+  - 🏥 **MRI** reveals brain changes but is **expensive and not easily accessible**
+  - 📊 **EEG** offers cheaper, portable alternative but most deep learning approaches have **three big issues**:
+
+| Issue | Problem |
+|-------|---------|
+| **1. Ignore spatial relationships** | Between electrodes ❌ |
+| **2. Overfitting** | EEG datasets are small |
+| **3. Lack interpretability** | Clinicians can't trust/understand reasoning |
+
+- _Focus problem_: 🔍 How to build an **explainable graph-based model** that can:
+  - ✅ **Automatically detect PD** from resting-state EEG
+  - ✅ **Show which brain regions and connections** contribute most to diagnosis
+
+- _Why important_: 💡 PD is **second most common neurodegenerative disorder** worldwide. If EEG provides **reliable and interpretable biomarkers**:
+  - 🌍 **Early screening** in low-resource areas (no MRI access)
+  - 📈 **Continuous monitoring** and rehabilitation
+  - 🏥 **Build physician trust** through transparency and interpretability
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **Multi-Head Graph Structure Learning (MH-GSL)** framework:
+  - 🔗 **Dynamically learns** brain connectivity structure (not fixed correlations)
+  - 💪 **Combines contrastive learning** for stronger generalization
+  - 🔍 **Uses gradient-weighted attention maps** to visualize relevant brain connections
+
+**Key results**:
+
+| Metric | Performance | Note |
+|--------|-------------|------|
+| **Accuracy** | **69.4%** | Leave-one-subject-out validation |
+| **Dataset** | UCSD resting-state EEG | 15 PD, 16 healthy |
+| **Interpretability** | ✅ Brain network visualizations | Stronger **occipital connectivity** in PD patients |
+
+- _Why necessary_: 🏥 Traditional EEG graph methods have **critical limitations**:
+
+| Traditional Approach | Problem |
+|---------------------|---------|
+| **Fixed correlations** | Use static Pearson correlation |
+| **Can't capture** | Nonlinear or dynamic interactions |
+| **Overestimate** | Nearby electrodes (signal mixing) |
+| **Fail to represent** | True brain network changes |
+
+**MH-GSL solves this** by **learning graph structure during training** → each attention head learns unique connectivity pattern = more robust and biologically meaningful ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Framework integrates **four main components**:
+
+| Component | Function |
+|-----------|----------|
+| **1. Structured Global Convolution (SGConv)** | Encodes long-range temporal patterns efficiently |
+| **2. Contrastive Learning (SimCLR)** | Pre-trains encoder for general EEG features, improves robustness with small datasets |
+| **3. Multi-Head Graph Structure Learning (MH-GSL)** | Each head learns different adjacency matrix (brain connectivity), fused through Chebyshev GNN |
+| **4. Gradient-Weighted Graph Attention** | Uses gradients to measure connection contributions → interpretable connectivity maps |
+
+- _Method_: 🔧
+
+**Dataset**: UC San Diego (UCSD) resting-state EEG
+
+| Property | Details |
+|----------|---------|
+| **Participants** | 15 PD patients, 16 healthy controls |
+| **Electrodes** | 32 channels |
+| **Sampling rate** | 512 Hz |
+| **Recording** | 3-minute resting-state |
+
+
+**Training setup**:
+
+| Step | Description |
+|------|-------------|
+| **Validation** | Leave-One-Subject-Out (ensures generalization) |
+| **Pre-training** | Contrastive learning on EEG segments |
+| **Fine-tuning** | Frozen encoder + 2-head graph structure learner |
+| **Spatial aggregation** | Chebyshev GNN |
+
+**Pipeline**:
+```
+EEG → SGConv (temporal) → Contrastive Pre-training → MH-GSL (spatial) → Chebyshev GNN → Classification
+                                                                              ↓
+                                                                    Gradient-Weighted Explanation
+```
+
+- _Result_: 📈
+
+**Performance comparison**:
+
+| Model | Accuracy | F1-score | AUC |
+|-------|----------|----------|-----|
+| **CNN baseline** | 62.99% | 0.63 | 0.64 |
+| **LongConv Encoder** | 64.68% | 0.64 | 0.64 |
+| **+ GNN** | 66.97% | 0.66 | 0.67 |
+| **+ Multi-Head GSL** | 67.73% | 0.67 | 0.72 |
+| **+ Contrastive Learning** | **69.40%** 🏆 | **0.68** | 0.66 |
+
+**Key observations**:
+
+| Finding | Details |
+|---------|---------|
+| **Component contributions** | Both **contrastive pre-training** and **multi-head structure learning** significantly improved accuracy |
+| **Interpretability** | Gradient-based visualization revealed **enhanced occipital connectivity** in PD patients |
+| **Clinical relevance** | Consistent with known **motor and visual processing abnormalities** in PD ✅ |
+
+
+- _Conclusion_: 🎓 **Dynamic and explainable graph neural network** for EEG-based Parkinson's disease detection effectively combines:
+  - ⏱️ **Global convolution** (temporal encoding)
+  - 💪 **Contrastive learning** (robustness)
+  - 🔗 **Multi-head graph learning** (spatial representation)
+  - 🔍 **Gradient-weighted explanations** (interpretability)
+  
+  **Key achievements**:
+  - 🏆 **69.4% accuracy** (leave-one-subject-out validation)
+  - 🧠 **Visualizes neural connections** driving decisions
+  - 📊 **Reveals enhanced occipital connectivity** in PD patients
+  - 🏥 **Interpretable and clinically useful** diagnostic tool
+  
+  Applications:
+  - 🌍 Early PD screening (low-resource areas)
+  - 📈 Continuous patient monitoring
+  - 🏥 Rehabilitation planning
+  - 🔬 Understanding PD brain network changes
+  
+  Multi-head graph structure learning = accurate AND explainable PD detection from affordable EEG. 🧠💡
+</details>
+</details>
+
+---
+
+---
+> [*REST- Efficient and Accelerated EEG Seizure Analysis through Residual State Updates*], [Jun 3, 2024] （ICML 2024）:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: ⚡ Ultra-lightweight, real-time EEG seizure detection using graph neural networks with residual state updates
+- _Author_: Arshia Afzal, Grigorios Chrysos, Volkan Cevher, Mahsa Shoaran
+- _Group_: EPFL, University of Wisconsin-Madison
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Traditional deep-learning methods for EEG seizure analysis (CNNs, RNNs, LSTMs, Transformers) are **accurate but too heavy**:
+  - 💾 **Large memory** usage
+  - ⏱️ **Take too long** to run
+  
+  → **Unsuitable for real-time clinical devices** (Responsive Neurostimulation - RNS, Deep Brain Stimulation - DBS) that must **react instantly** to prevent seizures.
+
+- _Focus problem_: 🔍 How to design a **lightweight, real-time EEG model** that:
+  - ✅ Captures **complex spatial and temporal** brain patterns for seizure detection
+  - ❌ **Without** slow "gating" or "attention" mechanisms (RNNs, Transformers)
+
+- _Why important_: 💡 **Millions of epilepsy patients** rely on seizure detection systems:
+  - ⚡ Systems must trigger **brain stimulation in milliseconds**
+  - ❌ Current models **too large or slow** for medical hardware deployment
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **REST** combines:
+
+| Component | Function |
+|-----------|----------|
+| **Graph Neural Networks (GNNs)** | Model how EEG sensors relate **spatially** on scalp |
+| **Residual State Updates** | New mechanism (ResNet-inspired) updates states **efficiently without LSTM gates** |
+
+→ Captures brain rhythms over time while staying **compact and fast** ✅
+
+**Key results**:
+
+| Metric | Performance |
+|--------|-------------|
+| **AUROC** | Up to **96.7%** on seizure detection 🏆 |
+| **Speed** | **9× faster** than SOTA models ⚡ |
+| **Memory** | Only **37 KB** (14× smaller than smallest baseline) 💾 |
+| **Inference time** | **~1.3 ms** per sample (real-time capable) |
+
+- _Why necessary_: 🏥 **Residual updates replace complex recurrent gates** while keeping temporal learning ability → enables real-time, low-power detection ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 **REST architecture**:
+  - 🔗 **Graph structure**: Efficiently encode spatial EEG relationships
+  - 🔄 **Residual updates**: Replace LSTM gates with lightweight state updates
+  - 🎲 **Binary random masking**: Skip updates for speed + regularization
+
+- _Method_: 🔧
+
+**Core mechanism**:
+
+**1. Graph construction**:
+- Each **electrode = node**
+- Connections based on **distance** (10-20 placement system)
+
+**2. Residual update** (each time step):
+```
+S_t = H_t + δS_t
+
+where:
+- H_t = hidden state projection
+- δS_t = computed using graph convolution
+```
+
+**3. Binary random masking**:
+- Similar to dropout
+- Randomly **skip updates** → speed up inference
+
+**4. Multiple updates per time step**:
+- Mimics deep network
+- **No extra layers or memory** needed
+
+
+**Datasets**:
+- **TUSZ** (Temple University Seizure Database)
+- **CHB-MIT** (Children's Hospital Boston - MIT)
+
+- _Result_: 📈
+
+**Performance comparison**:
+
+| Metric | REST | SOTA Models |
+|--------|------|-------------|
+| **AUROC** | **96.7%** 🏆 | Lower |
+| **Inference speed** | **9× faster** ⚡ | Baseline |
+| **Memory** | **37 KB** 💾 | 518 KB (14× larger) |
+| **Inference time** | **~1.3 ms** | Much slower |
+
+**Key advantages**:
+
+| Feature | Traditional Models | REST |
+|---------|-------------------|------|
+| **Temporal modeling** | LSTM gates (slow) | **Residual updates** ⚡ |
+| **Spatial modeling** | Limited/None | **Graph structure** 🔗 |
+| **Speed** | Slow | **9× faster** |
+| **Memory** | Large (500+ KB) | **37 KB** (14× smaller) |
+| **Real-time capable** | ❌ No | ✅ **Yes (~1.3 ms)** |
+| **Hardware deployment** | ❌ Difficult | ✅ **Medical devices ready** |
+
+
+- _Conclusion_: 🎓 **REST is a compact, ultra-fast EEG model** balancing accuracy, speed, and efficiency:
+  - 🏆 **96.7% AUROC** on seizure detection
+  - ⚡ **9× faster** than state-of-the-art
+  - 💾 **37 KB memory** (14× smaller)
+  - ⏱️ **~1.3 ms inference** (real-time capable)
+  - 🔄 **Residual updates** replace LSTM gates effectively
+  - 🔗 **Graph structure** captures spatial relationships
+  
+  **Key insight**: Graph-based residual state updates can enable **real-time, low-power seizure detection** without sacrificing accuracy.
+  
+  Applications:
+  - 🏥 **Responsive Neurostimulation (RNS)** devices
+  - 🧠 **Deep Brain Stimulation (DBS)** systems
+  - 📱 **On-chip epilepsy monitoring**
+  - ⚡ **Next-generation neural prosthetics**
+  
+  REST = making real-time seizure prevention practical with ultra-efficient hardware deployment. ⚡🧠
+</details>
+</details>
+
+---
+
+> [*Dynamic GNNs for Precise Seizure Detection and Classification from EEG Data*], [May 8, 2024]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🧠 Dynamic multi-view graph neural network combining temporal, spatial, and semantic information for seizure detection and classification
+- _Core Author_: Arash Hajisafi, Haowen Lin, Yao-Yi Chiang, and Cyrus Shahabi
+- _Core Group_: University of Southern California, Los Angeles, University of Minnesota, Minneapolis
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Detecting and classifying epileptic seizures from EEG is difficult because:
+  - 📊 EEG signals are **complex, noisy**
+  - 👥 **Vary a lot between patients**
+  
+  Traditional deep learning models find **time patterns** but **fail to understand how brain regions** (EEG electrodes) **interact** with each other.
+
+- _Focus problem_: 🔍 How to build a model that captures:
+  - ⏱️ **Changing relationships** between brain regions over time
+  - 🧠 **Meaning** of different brain areas
+  
+  → Recognize various seizure types more accurately
+
+- _Why important_: 💡 Each seizure type:
+  - 🧠 **Affects different brain areas**
+  - 💊 **Requires different treatments**
+  
+  Current models miss deeper relationships — only see EEG as **flat signal**. If model tracks **both activity changes AND region importance** → doctors can:
+  - ⚡ **Detect seizures faster**
+  - 🎯 **Understand seizure types better** (even with limited data)
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **NeuroGNN** learns from **multiple perspectives** simultaneously:
+
+| View | What It Captures |
+|------|------------------|
+| **1. Time** | How signal changes over time ⏱️ |
+| **2. Space** | How nearby electrodes interact 🔗 |
+| **3. Meaning** | What brain region each electrode represents 🧠 |
+| **4. Hierarchy** | How smaller areas connect to larger functional regions 🏗️ |
+
+→ Multi-view approach understands **both sequence and structure** → more precise seizure detection and classification ✅
+
+**Performance improvements**:
+
+| Task | Improvement |
+|------|-------------|
+| **Detection accuracy** | **+5%** 🏆 |
+| **Classification accuracy** | **+12-13%** 🏆 |
+| **With 20% data** | Strong performance ✅ |
+
+- _Why necessary_: 🏥 In real-world EEG data:
+
+| Challenge | Problem |
+|-----------|---------|
+| **Same seizure type** | Looks different across patients |
+| **Overlapping info** | Electrodes capture redundant signals |
+| **Fixed graphs** | Can't reflect constantly shifting brain networks |
+
+**Dynamic graph model** needed to handle this fluidity ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Treat **brain as dynamic graph**:
+
+| Component | Description |
+|-----------|-------------|
+| **Nodes** | EEG electrodes (brain regions) |
+| **Edges** | Change over time (how areas interact) |
+| **Meta-nodes** | Represent large brain regions (motor, visual areas) |
+| **Semantic knowledge** | Language model (MPNet) gives brain region function understanding |
+
+System sees **both signal and meaning** behind it ✅
+
+- _Method_: 🔧
+
+**Five-step pipeline**:
+
+| Step | Description |
+|------|-------------|
+| **1. Feature extraction** | Node features include:<br>• Time info (GRUs)<br>• Brain meaning (text embeddings) |
+| **2. Dynamic adjacency matrix** | New graph every few seconds using:<br>• Spatial similarity (electrode distance)<br>• Temporal correlation (attention-based)<br>• Semantic similarity (brain region meaning) |
+| **3. Graph learning** | Modified GNN passes info across nodes<br>• Hierarchical pooling for brain-region patterns |
+| **4. Pre-training** | Self-supervised: predict future EEG signals |
+| **5. Fine-tuning** | Two tasks:<br>• Seizure detection<br>• Seizure type classification |
+
+
+**Dataset**: Temple University Seizure Corpus (TUSZ, **8 seizure types**)
+
+**Baselines**: CNN, LSTM, DCRNN
+
+- _Result_: 📈
+
+**Performance comparison**:
+
+| Model | Detection | Classification |
+|-------|-----------|----------------|
+| **CNN** | Baseline | Baseline |
+| **LSTM** | Baseline | Baseline |
+| **DCRNN** | Baseline | Baseline |
+| **NeuroGNN** | **+5%** 🏆 | **+12-13%** 🏆 |
+
+**Data efficiency**:
+
+| Training Data | Performance |
+|---------------|-------------|
+| **100%** | Best |
+| **20%** | **Still strong** ✅ |
+
+→ Learns efficiently from **limited samples**
+
+**Key advantages**:
+
+| Feature | Traditional Models | NeuroGNN |
+|---------|-------------------|----------|
+| **Temporal modeling** | ✅ Yes | ✅ **Enhanced** |
+| **Spatial modeling** | Limited | ✅ **Dynamic graph** 🔗 |
+| **Semantic understanding** | ❌ None | ✅ **Brain region meaning** 🧠 |
+| **Hierarchy** | ❌ Flat | ✅ **Multi-level** 🏗️ |
+| **Adaptability** | ❌ Fixed | ✅ **Dynamic** (updates in real-time) |
+| **Data efficiency** | Poor | ✅ **Strong with 20% data** |
+
+- _Conclusion_: 🎓 **NeuroGNN successfully combines time, space, and meaning** to model brain behavior during seizures:
+  - ⏱️ **Time**: Signal evolution (GRU)
+  - 🔗 **Space**: Dynamic electrode interactions (graph)
+  - 🧠 **Meaning**: Brain region functions (MPNet embeddings)
+  - 🏗️ **Hierarchy**: Small → large brain areas
+  
+  Applications:
+  - 🏥 Clinical seizure detection systems
+  - 🎯 Seizure type classification (8 types)
+  - 📈 Patient-specific monitoring
+  - 🧠 Understanding seizure mechanisms
+  
+  Multi-view dynamic graph learning = capturing temporal dynamics + spatial interactions + semantic meaning for superior seizure analysis. 🧠⏱️🔗
 </details>
 </details>
 

@@ -82,15 +82,15 @@
 
 ---
 
-> [*BSG-Transformer: Balanced Signed Graph Algorithm Unrolling Transformer*], [Date]:
+> [*Lightweight Transformer For EEG Classification Via Balanced Signed Graphed Algorithmic Unrolling*], [Date]:
 <details>
 <summary><strong>V0:</strong></summary>
 <details>
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: ⚡ Interpretable EEG classification using balanced signed graphs with both positive and negative correlations (epilepsy detection)
-- _Core Author_: [Author names from paper]
-- _Core Group_: [Research institution/group]
+- _Core Author_: Junyi Yao, Parham Eftekhar, Gene Cheung, Xujin Chris Liu, Yao Wang, Wei Hu
+- _Core Group_: Peking University, York University, New York University
 </details>
 
 <details>

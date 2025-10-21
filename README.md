@@ -2741,8 +2741,8 @@ Different EEG signals → push representations apart
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: 🧠 Graph neural networks for EEG classification preserving brain topology and functional connectivity
-- _Core Author_: Andac Demir, Toshiaki Koike-Akino, Ye Wang, Masaki Haruna, Deniz Erdogmus
-- _Core Group_: Northeastern University, Mitsubishi Electric Research Laboratories (MERL), Mitsubishi Electric Corporation (MELCO)
+- _Author_: Andac Demir, Toshiaki Koike-Akino, Ye Wang, Masaki Haruna, Deniz Erdogmus
+- _Group_: Northeastern University, Mitsubishi Electric Research Laboratories (MERL), Mitsubishi Electric Corporation (MELCO)
 </details>
 
 <details>
@@ -2899,7 +2899,6 @@ Different EEG signals → push representations apart
 
 ---
 
----
 > [*Self-Supervised Graph Neural Networks for Improved Electroencephalographic Seizure Analysis*], [Mar 13, 2022] (ICLR 2022):
 <details>
 <summary><strong>V0:</strong></summary>
@@ -2907,8 +2906,8 @@ Different EEG signals → push representations apart
 <summary><strong>Bases</strong></summary>
 
 - _Topic_: ⚡ Graph-based recurrent neural network with self-supervised pre-training for seizure detection, classification, and localization
-- _Core Author_: Siyi Tang, Jared Dunnmon, Khaled Saab, Xuan Zhang, Qianying Huang, Florian Dubost, Daniel Rubin, Christopher Lee-Messer
-- _Core Group_: Stanford University
+- _Author_: Siyi Tang, Jared Dunnmon, Khaled Saab, Xuan Zhang, Qianying Huang, Florian Dubost, Daniel Rubin, Christopher Lee-Messer
+- _Group_: Stanford University
 </details>
 
 <details>
@@ -3069,6 +3068,641 @@ Mask channels/time windows → Observe prediction changes
   - **Correlation graph**: Better for **focal seizure localization** ✅
   
   Graph RNN + self-supervised learning = accurate detection + interpretable localization on large public dataset (TUSZ). ⚡🧠🔍
+</details>
+</details>
+
+---
+
+> [*Temporal Graph Convolutional Networks for Automatic Seizure Detection*], [May 3, 2019]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: ⚡ Graph-based recurrent neural network with self-supervised pre-training for seizure detection, classification, and localization
+- _Author_: Ian C. Covert, Balu Krishnan, Imad Najm, Jiening Zhan, Matthew Shore, John Hixson, Ming Jack Po
+- _Group_: University of Washington, Cleveland Clinic Foundation, Google AI Healthcare
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Traditional deep learning models for seizure detection often have **three issues**:
+
+| Issue | Problem |
+|-------|---------|
+| **1. Euclidean assumption** | Treat EEG as images, **ignore non-Euclidean brain topology** 🧠 |
+| **2. Data imbalance** | **Struggle with rare seizure types** 📊 |
+| **3. Lack interpretability** | Cannot **explain where seizures occur** ❌ |
+
+- _Focus problem_: 🔍 How to solve **three issues simultaneously**:
+  - ✅ Represent EEG's **spatiotemporal and network structure** faithfully
+  - ✅ Improve **classification performance** (especially rare seizure classes)
+  - ✅ **Quantitatively evaluate** seizure localization ability
+
+- _Why important_: 💡 Seizure localization is **clinically critical** for:
+  - 🏥 Diagnosis and treatment planning
+  - 🔪 Surgical intervention (identifying seizure onset zones)
+  - 💊 Personalized therapy
+  
+  Current models can't provide this **spatial information** ❌
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **Graph-based RNN + Self-supervised pre-training** achieves:
+
+**Performance**:
+
+| Task | Metric | Result | vs. Baseline |
+|------|--------|--------|-------------|
+| **Detection** | AUROC | **0.875** 🏆 | Surpasses CNN/LSTM |
+| **Classification** | Weighted F1 | **0.749** 🏆 | Higher than previous |
+| **Rare seizure (tonic)** | Accuracy | **+47 points** 🏆 | Massive improvement |
+| **Focal localization** | Precision | **25.4%** 🏆 | vs. 3.5% (CNN) |
+
+**Key components**:
+
+| Component | Function |
+|-----------|----------|
+| **Graph structure** | Captures non-Euclidean brain topology 🧠 |
+| **Self-supervised pre-training** | Predicts future EEG → learns robust representations 💪 |
+| **Interpretability module** | Occlusion-based analysis → localizes seizures 🔍 |
+
+- _Why necessary_: 🏥 Existing models have **critical gaps**:
+  - Treat brain as flat grid → **lose spatial relationships**
+  - Fail on rare seizures → **data imbalance problem**
+  - Black box predictions → **no clinical insight** where seizures occur
+  
+  Need **graph + self-supervised + interpretable** approach ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 **Propose Graph-based RNN with self-supervised pre-training**:
+  - 🔵 **Nodes**: EEG electrodes
+  - 🔗 **Edges**: Electrode relationships
+  - 🤖 **Pre-training**: Predict future EEG signals (no labels needed)
+  - 🔍 **Interpretability**: Occlusion analysis → localize seizures
+
+- _Method_: 🔧
+
+**1️⃣ Graph Construction** (two types)
+
+| Graph Type | Edge Definition |
+|------------|----------------|
+| **Distance graph** | Physical distance between electrodes (10-20 system) |
+| **Correlation graph** | Functional connectivity (cross-correlation of signals) |
+
+**2️⃣ Model Architecture**
+
+| Component | Description |
+|-----------|-------------|
+| **Base model** | **DCRNN** (Diffusion Convolutional Recurrent Neural Network) |
+| **Spatial modeling** | Diffusion graph convolution |
+| **Temporal modeling** | Gated Recurrent Units (GRU) |
+
+**Architecture extends DCRNN** to model **both spatial diffusion and temporal dynamics**
+
+**3️⃣ Self-Supervised Pre-Training**
+
+| Aspect | Details |
+|--------|---------|
+| **Task** | Predict **next 12 seconds** of EEG |
+| **Input** | Current 12/60-second window |
+| **Loss** | Mean Absolute Error (MAE) |
+| **Learning** | Temporal dynamics + global representations (no labels) |
+
+**4️⃣ Interpretability Module**
+
+**Occlusion-based analysis**:
+```
+Mask channels/time windows → Observe prediction changes
+```
+
+**Two metrics**:
+
+| Metric | Definition |
+|--------|-----------|
+| **Coverage** | How much of **true seizure region** is detected |
+| **Localization** | How **precisely** model pinpoints seizure region |
+
+
+**Dataset**: 
+- **TUSZ** (Temple University Hospital EEG Seizure Corpus)
+- **5,499 EEGs**
+- **8 seizure types**
+
+**Tasks evaluated**:
+1. **Seizure detection** (seizure vs. non-seizure)
+2. **Seizure classification** (seizure type prediction)
+3. **Localization** (find where seizures occur)
+
+**Baselines**: CNN, LSTM
+
+- _Result_: 📈
+
+
+**Key findings**:
+
+| Finding | Clinical Value |
+|---------|---------------|
+| **Graph modeling captures non-Euclidean structure** | Better accuracy + interpretability ✅ |
+| **Self-supervised pre-training** | Robust initialization, helps class imbalance 💪 |
+| **Correlation graph better for localization** | Than distance-based graph 🔍 |
+| **Highlights abnormal brain regions** | Clinically valuable feature 🏥 |
+
+**Advantages**:
+
+| Feature | Traditional Models | Graph RNN + SSL |
+|---------|-------------------|-----------------|
+| **Spatial modeling** | Euclidean (grid) ❌ | **Non-Euclidean (graph)** ✅ |
+| **Rare seizures** | Poor performance | **+47 points** 🏆 |
+| **Localization** | 3.5% (CNN) | **25.4%** (7× better) ✅ |
+| **Pre-training** | None/Supervised | **Self-supervised** 💪 |
+| **Interpretability** | Black box | **Occlusion analysis** 🔍 |
+
+- _Conclusion_: 🎓 **First integration of GNNs and self-supervised learning** for EEG seizure analysis:
+  - 🏆 **State-of-the-art performance**: AUROC 0.875 (detection), F1 0.749 (classification)
+  - ⚡ **Massive improvement on rare seizures**: +47 points (tonic type)
+  - 🔍 **7× better localization**: 25.4% vs. 3.5% (CNN)
+  - 🧠 **Respects brain topology**: Graph-based non-Euclidean modeling
+  - 💪 **Robust to data imbalance**: Self-supervised pre-training
+  - 🏥 **Clinically valuable**: Visualizes seizure onset zones
+  
+  **Clinical applications**:
+  - 🔪 Surgical planning (identify resection targets)
+  - 💊 Treatment personalization
+  - 📈 Continuous monitoring
+  - 🏥 Diagnosis support
+  
+  Graph RNN + self-supervised learning = accurate detection + interpretable localization on large public dataset (TUSZ). ⚡🧠🔍
+</details>
+</details>
+
+---
+
+> [*EEG-Based Emotion Recognition Using Regularized Graph Neural Networks*], [Date]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 😊 Biologically-inspired regularized graph neural network for robust EEG emotion recognition
+- _Author_: Peixiang Zhong, Di Wang, Chunyan Miao,
+- _Group_: Nanyang Technological University
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Most EEG-based emotion recognition models **fail to use real brain structure**:
+  - 🧠 Treat EEG channels as **independent points**
+  - ❌ Ignore **how brain regions interact**
+  - 👥 Struggle with **large variations between people**
+  - 📊 Struggle with **noisy emotional labels**
+
+- _Focus problem_: 🔍 How to design a model that:
+  1. ✅ Captures **both local and distant relationships** among EEG electrodes
+  2. ✅ Stays **stable across different people**
+  3. ✅ Handles **labeling errors** (subjects don't feel exact intended emotion)
+
+- _Why important_: 💡 EEG signals reflect **inner emotions** that people cannot easily fake. Making emotion recognition reliable can help:
+  - 💬 Human-computer interaction
+  - 🏥 Mental health monitoring
+  - 🤖 Adaptive systems responding to emotional states
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **Biologically inspired GNN + two regularizers** achieves:
+
+**Performance**:
+
+| Setup | Accuracy |
+|-------|----------|
+| **Subject-dependent** | **~94%** 🏆 |
+| **Subject-independent** | **~85%** 🏆 |
+
+**Key brain regions for emotion** (learned by model):
+- 🧠 **Frontal** regions
+- 🧠 **Parietal** regions
+- 🧠 **Occipital** regions
+
+**Two regularizers**:
+
+| Regularizer | Function |
+|-------------|----------|
+| **NodeDAT** | Makes each channel's feature **domain-invariant** → reduces subject differences 👥 |
+| **EmotionDL** | Replaces one-hot labels with **soft distributions** → reduces noisy/uncertain labels 📊 |
+
+- _Why necessary_: 🏥 Critical gaps in existing models:
+
+| Problem | Issue |
+|---------|-------|
+| **Ignore connections** | EEG channels are physically and functionally connected → wastes **valuable spatial information** |
+| **Subject differences** | Can mislead standard models ❌ |
+| **Noisy labels** | Subjects may not feel exact intended emotion |
+
+**Regularization needed** to make system robust ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 **Treat each EEG electrode as node** in brain-like graph:
+  - 🔗 **Adjacency matrix** links nearby electrodes
+  - 🧠 Connects **symmetric areas** across left/right hemispheres
+  
+  **Add two regularizers**:
+
+| Regularizer | Purpose |
+|-------------|---------|
+| **1. NodeDAT** | Node-wise adversarial training → domain-invariant features (reduce subject differences) |
+| **2. EmotionDL** | Emotion distribution learning → soft labels (reduce label noise) |
+
+- _Method_: 🔧
+
+**Architecture**:
+
+| Component | Description |
+|-----------|-------------|
+| **Base model** | **SGC** (Simple Graph Convolutional Network) extended |
+| **Adjacency matrix** | Sparse, combining:<br>• **Local**: Distance-based connections<br>• **Global**: Hemisphere-based connections |
+| **Regularizers** | NodeDAT + EmotionDL |
+
+**Graph construction**:
+
+**Biologically inspired adjacency**:
+```
+A = A_local + A_global
+
+where:
+• A_local: Nearby electrode connections (distance-based)
+• A_global: Symmetric hemisphere connections (left-right)
+```
+
+**Training components**:
+
+| Component | Function |
+|-----------|----------|
+| **NodeDAT** | Node-wise adversarial training for domain invariance |
+| **EmotionDL** | Soft emotion label distributions (not one-hot) |
+
+
+**Datasets**:
+
+| Dataset | Channels | Emotion Classes |
+|---------|----------|-----------------|
+| **SEED** | 62 | 3 classes |
+| **SEED-IV** | 62 | 4 classes |
+
+**Evaluation setups**:
+- **Subject-dependent**: Train and test on same subject
+- **Subject-independent**: Train on some subjects, test on others
+
+**Baselines**: CNN-based, RNN-based, other GNN-based models
+
+- _Result_: 📈
+
+**Key findings**:
+
+| Finding | Result |
+|---------|--------|
+| **Outperforms all baselines** | CNN, RNN, other GNN models ✅ |
+| **Stable across subjects** | Robust cross-subject performance 👥 |
+| **Clear brain activation** | Frontal, parietal, occipital regions 🧠 |
+| **Both regularizers help** | Ablation study confirms ✅ |
+| **Biological adjacency helps** | vs. simple adjacency matrices ✅ |
+
+**Advantages**:
+
+| Feature | Traditional Models | RGNN |
+|---------|-------------------|------|
+| **Brain structure** | Ignored ❌ | **Biologically inspired** 🧠 |
+| **Subject variability** | Poor handling | **NodeDAT regularization** 👥 |
+| **Label noise** | Sensitive | **EmotionDL soft labels** 📊 |
+| **Spatial relationships** | Local only | **Local + Global** 🔗 |
+| **Subject-dependent** | Good | **~94%** 🏆 |
+| **Subject-independent** | Poor | **~85%** ✅ |
+
+- _Conclusion_: 🎓 **Biologically grounded and well-regularized GNN** for EEG emotion recognition:
+  - 🧠 **Captures how brain regions cooperate** during emotional responses
+  - 👥 **Resists subject differences** (NodeDAT)
+  - 📊 **Handles label noise** (EmotionDL)
+  - 🏆 **~94% subject-dependent**, **~85% subject-independent**
+  - 🔍 **Learns meaningful brain patterns**: Frontal, parietal, occipital regions
+  - ✅ **Ablation studies confirm** both regularizers + biological adjacency improve results
+  
+  Applications:
+  - 💬 Human-computer interaction
+  - 🏥 Mental health monitoring
+  - 🤖 Adaptive affective systems
+  - 😊 Emotion-aware interfaces
+  
+  **Sets new standard** for future affective EEG analysis by combining biological priors with robust regularization. 😊🧠
+</details>
+</details>
+
+---
+
+> [*GCNs-Net: A Graph Convolutional Neural Network Approach for Decoding Time-resolved EEG Motor Imagery Signals*], [Aug 26, 2022]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🤖 Graph convolutional networks using functional connectivity for motor imagery EEG decoding in BCI systems
+- _Core Author_: Yimin Hou, Shuyue Jia, Xiangmin Lun, Ziqian Hao, Yan Shi, Yang Li, Rui Zeng, Jinglei Lv
+- _Core Group_: City University of Hong Kong, University of Sydney
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 Traditional EEG decoding models (CNNs) treat EEG electrodes as **independent points in Euclidean space**. However:
+  - 🧠 EEG signals generated by **interconnected brain regions**
+  - ❌ Ignoring **functional and topological relationships** weakens decoding accuracy
+
+- _Focus problem_: 🔍 How to use **functional connectivity** among EEG electrodes (reflecting real brain network dynamics) to improve classification of **time-resolved motor imagery** signals for:
+  - 👤 Individual-level EEG data
+  - 👥 Group-level EEG data
+
+- _Why important_: 💡 Accurate motor imagery decoding essential for **BCI systems**:
+  - 🦾 Control external devices (prosthetic limbs, wheelchairs)
+  - 🏥 Using **only brain signals**
+  - 🎯 Improving accuracy and stability → **more practical real-world medical applications**
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **GCNs-Net** learns both **spatial and temporal patterns** by building **graph Laplacian** based on electrode correlations:
+
+**Performance**:
+
+| Level | Dataset | Accuracy |
+|-------|---------|----------|
+| **Subject-level** | PhysioNet | **98.72%** 🏆 |
+| **Subject-level** | High Gamma | **96.24%** 🏆 |
+| **Group-level** | Average | **88-89%** 🏆 |
+
+**Key features**:
+- ✅ **Superior performance** and robustness
+- ✅ **Stable** across 10-fold validation
+- ✅ **Outperforms CNN/RNN** (p < 0.05)
+- ✅ **Robust to individual differences**
+- ✅ **Scales to large datasets** (tested up to 100 subjects)
+
+- _Why necessary_: 🏥 **Brain is not a grid but a complex network**:
+
+| Model Type | Brain Representation | Problem |
+|------------|---------------------|---------|
+| **Standard CNN** | Euclidean grid ❌ | Cannot capture **long-range relationships** between brain regions |
+| **GCNs-Net** | Graph network ✅ | Reflects **brain's real connectivity** → improves generalization |
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 **Represent EEG electrodes as graph nodes**:
+  - 🔵 **Nodes**: EEG electrodes
+  - 🔗 **Edges**: Functional connections (computed using **absolute Pearson correlation coefficients**)
+  
+  **Apply spectral graph convolution** with Chebyshev polynomial approximation → efficient feature extraction → graph pooling → softmax classifier
+
+- _Method_: 🔧
+
+**Architecture components**:
+
+| Component | Description |
+|-----------|-------------|
+| **Graph Laplacian** | Represents EEG **topological relationships** |
+| **GCN layers** | Capture **spatial dependencies** |
+| **Pooling layers** | Reduce dimensionality |
+| **Chebyshev spectral filtering** | Reduce computation while preserving **local structure** ⚡ |
+
+**Graph construction**:
+```
+Edge weights = Absolute Pearson correlation between electrode signals
+Graph Laplacian = Normalized adjacency matrix representing brain connectivity
+```
+
+
+**Datasets**:
+
+| Dataset | Task | Classes |
+|---------|------|---------|
+| **PhysioNet** | Motor imagery | 4 classes (left hand, right hand, both hands, both feet) |
+| **High Gamma** | Motor imagery | 4 classes |
+
+**Evaluation**:
+
+| Setup | Method |
+|-------|--------|
+| **Subject-level** | Individual performance |
+| **Group-level** | Cross-subject generalization |
+| **Validation** | **10-fold cross-validation** (stability) |
+
+**Technical optimization**:
+- **Chebyshev polynomial approximation**: Efficient spectral filtering
+- **Graph pooling**: Dimensionality reduction
+- **Functional connectivity**: Absolute Pearson correlation
+
+- _Result_: 📈
+
+**Robustness findings**:
+
+| Test | Result |
+|------|--------|
+| **Individual differences** | High robustness ✅ |
+| **Large datasets** | Tested up to **100 subjects** ✅ |
+| **Cross-validation** | Stable performance across folds |
+
+**Key advantages**:
+
+| Feature | CNN | GCNs-Net |
+|---------|-----|----------|
+| **Brain representation** | Euclidean grid ❌ | **Graph network** ✅ |
+| **Long-range relationships** | Cannot capture ❌ | **Captured** ✅ |
+| **Subject-level** | Lower | **98.72%** 🏆 |
+| **Group-level** | Lower | **88-89%** 🏆 |
+| **Robustness** | Limited | **High** (100 subjects) ✅ |
+| **Computational efficiency** | Standard | **Chebyshev approximation** ⚡ |
+
+
+- _Conclusion_: 🎓 **GCNs-Net successfully integrates brain's functional topology** into deep learning:
+  - 🏆 **98.72% subject-level** (PhysioNet), **96.24%** (High Gamma)
+  - 👥 **88-89% group-level** (stable across subjects)
+  - ⚡ **Efficient**: Chebyshev spectral filtering
+  - 🔍 **Interpretable**: Graph structure reflects brain connectivity
+  - 💪 **Robust**: Handles individual differences, scales to 100 subjects
+  - 📊 **Statistically significant**: p < 0.05 vs. CNN/RNN
+  
+  Applications:
+  - 🦾 Prosthetic limb control
+  - ♿ Wheelchair navigation
+  - 🏥 Rehabilitation systems
+  - 🤖 Real-time BCI
+  
+  **Important step toward**: Real-time, robust BCI systems capable of **generalizing across individuals and tasks** by modeling brain's true network structure. 🤖🧠
+</details>
+</details>
+
+---
+
+> [*EEG-GCNN- Augmenting Electroencephalogram-based Neurological Disease Diagnosis using a Domain-guided Graph Convolutional Neural Network*], [Nov 17, 2020]:
+<details>
+<summary><strong>V0:</strong></summary>
+<details>
+<summary><strong>Bases</strong></summary>
+
+- _Topic_: 🏥 Domain-guided graph convolutional network for detecting hidden neurological abnormalities in visually "normal" EEG
+- _Core Author_: Neeraj Wagh, Yogatheesan Varatharajah
+- _Core Group_: University of Illinois at Urbana-Champaign
+</details>
+
+<details>
+<summary><strong>Problems</strong></summary>
+
+- _Main problem_: 🎯 In clinical practice, EEG is **primary tool for diagnosing neurological diseases**. However:
+  - 👨‍⚕️ **Expert visual diagnosis**: Only **~50% sensitive**
+  - ❌ Many "normal-looking" EEGs from **diseased patients** mistakenly labeled as **healthy**
+
+- _Focus problem_: 🔍 Can a data-driven model **detect hidden abnormalities** in EEG signals that **appear normal to human experts**, effectively distinguishing:
+  - 🏥 EEGs from **neurologically diseased patients**
+  - ✅ vs. EEGs from **healthy individuals**
+
+- _Why important_: 💡 **Missed diagnoses** lead to:
+  - ⏰ **Delayed clinical intervention**
+  - ⚠️ Increased patient **risk of injury or comorbidities**
+  
+  AI model identifying disease-related patterns **earlier and more reliably** → greatly improve medical outcomes + reduce clinician burden ✅
+</details>
+
+<details>
+<summary><strong>Motivations</strong></summary>
+
+- _Main finding/insight_: 📊 **EEG-GCNN** (domain-guided graph CNN) captures **both spatial and functional connectivity**:
+
+| Connectivity Type | Measurement |
+|------------------|-------------|
+| **Spatial** | Electrode distance (geodesic) |
+| **Functional** | Signal coherence (spectral) |
+
+**Performance**:
+
+| Model | AUC | vs. Human Experts |
+|-------|-----|-------------------|
+| **Human experts** | ~0.50 sensitivity | Baseline ❌ |
+| **Random Forest** | 0.80 | Better |
+| **FCNN** | 0.71 | Lower |
+| **EEG-GCNN** | **0.90** 🏆 | **Far superior** ✅ |
+
+**Key achievement**: Successfully **differentiates "normal" EEGs** from:
+- 🏥 Neurological patients (hidden abnormalities)
+- ✅ Healthy individuals
+
+- _Why necessary_: 🏥 Conventional approaches have **critical limitations**:
+
+| Approach | Problem |
+|----------|---------|
+| **CNN** | Treats channels as **independent** ❌ |
+| **Handcrafted features** | Miss brain **network structure** ❌ |
+| **Both** | Fail to represent **true brain connectivity** |
+
+**Graph modeling** mirrors brain's **interconnected regions** → improves diagnostic sensitivity ✅
+</details>
+
+<details>
+<summary><strong>Solutions</strong></summary>
+
+- _Idea_: 💭 Represent each EEG recording as **fully connected weighted graph**:
+
+| Component | Description |
+|-----------|-------------|
+| **Nodes** | EEG channels |
+| **Edges** | Combine **spatial distances** + **functional coherences** |
+
+Use **spectral graph convolutions** (Kipf & Welling, 2016) → learn connectivity-aware features → aggregate to graph-level embeddings → classify
+
+- _Method_: 🔧
+
+**Datasets**:
+
+| Dataset | Description | Size |
+|---------|-------------|------|
+| **TUH EEG Corpus (TUAB)** | "Normal" EEGs from **neurological patients** | 1,385 EEGs |
+| **MPI LEMON** | EEGs from **healthy participants** | 208 EEGs |
+
+**Feature extraction**:
+- **Power Spectral Density (PSD)** across **six frequency bands**:
+  - δ (delta)
+  - θ (theta)
+  - α (alpha)
+  - β_L (low beta)
+  - β_H (high beta)
+  - γ (gamma)
+
+**Graph construction**:
+
+| Component | Method |
+|-----------|--------|
+| **Spatial adjacency** | Geodesic distance between electrodes |
+| **Functional adjacency** | Spectral coherence between signals |
+| **Combined adjacency** | Weighted combination of both |
+
+
+**Training setup**:
+
+| Component | Details |
+|-----------|---------|
+| **Cross-validation** | **10-fold** |
+| **Class imbalance** | **Weighted loss** |
+| **Model variants** | Shallow + Deep EEG-GCNN |
+
+**Baselines**:
+- Random Forest
+- Fully Connected Neural Network (FCNN)
+
+- _Result_: 📈
+
+**Key findings**:
+
+| Finding | Clinical Significance |
+|---------|----------------------|
+| **Detects subtle deviations** | That experts **often miss** 🔍 |
+| **Hidden neurological patterns** | Exist in "normal" EEGs ✅ |
+| **Graph-based modeling** | Reflects **neurophysiological connectivity** 🧠 |
+
+**Advantages**:
+
+| Feature | Traditional Methods | EEG-GCNN |
+|---------|-------------------|----------|
+| **Brain representation** | Independent channels ❌ | **Graph (spatial + functional)** ✅ |
+| **Hidden patterns** | Cannot detect ❌ | **Detects** 🔍 |
+| **AUC** | 0.71-0.80 | **0.90** 🏆 |
+| **vs. Human experts** | ~50% sensitivity | **Far superior** ✅ |
+| **Generalization** | Limited | **Strong** (10-fold validated) |
+| **Interpretability** | Limited | **t-SNE clear separation** 📊 |
+
+- _Conclusion_: 🎓 **EEG-GCNN introduces novel graph-based approach** reflecting neurophysiological connectivity:
+  - 🔍 **Identifies subtle abnormalities** invisible to experts
+  - 🏆 **AUC = 0.90** vs. 0.80 (RF), 0.71 (FCNN), ~0.50 (human experts)
+  - 🧠 **Models brain's true structure**: Spatial + functional connectivity
+  - 📊 **Clear separation**: t-SNE validates healthy vs. diseased embeddings
+  - ✅ **Proves existence** of hidden neurological patterns in "normal" EEGs
+  
+  Applications:
+  - 🏥 Neurological disease screening
+  - 🔍 Early diagnosis support
+  - 👨‍⚕️ Clinical decision assistance
+  - 📊 Objective EEG assessment
+  
+  **Path toward**: Early, automated, and reliable diagnosis of neurological diseases by detecting patterns human experts cannot see. 🏥🧠🔍
 </details>
 </details>
 
